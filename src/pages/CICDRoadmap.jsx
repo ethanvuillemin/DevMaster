@@ -1,20 +1,47 @@
 import { Link } from 'react-router-dom';
 import { useProgress } from '../context/ProgressContext';
 import CICD_MODULES from '../data/cicdModules';
+import TRACKS, { TAGS } from '../data/tracks';
+import CapstoneProject from '../components/ui/CapstoneProject';
+
+const TRACK = TRACKS.find((t) => t.id === 'cicd');
 
 export default function CICDRoadmap() {
-  const { isExerciseComplete, isModuleComplete } = useProgress();
+  const { isExerciseComplete, isModuleComplete, getTrackStats } = useProgress();
+  const trackStats = getTrackStats('cicd');
 
   return (
     <div className="animate-fade-in">
       <div className="mb-10">
+        <div className="flex flex-wrap gap-2 mb-3">
+          {TRACK.tags.map((tagId) => {
+            const tag = TAGS[tagId];
+            return (
+              <span key={tagId} className="text-[11px] px-2 py-0.5 rounded-md font-mono font-bold border"
+                style={{ color: tag.color, borderColor: tag.color + '33', background: tag.color + '10' }}>
+                {tag.icon} {tag.label}
+              </span>
+            );
+          })}
+        </div>
         <h1 className="font-display font-extrabold text-3xl text-text-primary tracking-tight mb-2">
           🔄 CI/CD : From Scratch to Hero
         </h1>
-        <p className="text-text-secondary max-w-2xl">
+        <p className="text-text-secondary max-w-2xl mb-4">
           Apprenez à automatiser vos builds, tests et déploiements avec GitHub Actions,
           GitLab CI/CD et Jenkins. Écrivez de vrais pipelines dans l'éditeur interactif.
         </p>
+        {trackStats.totalCompleted > 0 && (
+          <div className="flex items-center gap-3">
+            <div className="h-2 rounded-full bg-surface-3 overflow-hidden w-48">
+              <div className="h-full rounded-full bg-gradient-to-r from-accent-blue to-blue-400 transition-all duration-700"
+                style={{ width: `${trackStats.percentage}%` }} />
+            </div>
+            <span className="text-xs font-mono text-text-muted">
+              {trackStats.totalCompleted}/{trackStats.totalExercises} ({trackStats.percentage}%)
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="relative pl-8 sm:pl-10">
@@ -69,6 +96,11 @@ export default function CICDRoadmap() {
           })}
         </div>
       </div>
+
+      {/* Capstone Project */}
+      {TRACK.capstone && (
+        <CapstoneProject trackId="cicd" capstone={TRACK.capstone} />
+      )}
     </div>
   );
 }
