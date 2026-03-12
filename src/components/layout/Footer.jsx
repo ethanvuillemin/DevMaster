@@ -1,10 +1,10 @@
 const FOOTER_LINKS = [
   { label: '📖 Pro Git Book', url: 'https://git-scm.com/book/fr/v2' },
   { label: '🌿 Learn Git Branching', url: 'https://learngitbranching.js.org/?locale=fr_FR' },
-  { label: '📋 Cheatsheet PDF', url: 'https://education.github.com/git-cheat-sheet-education.pdf' },
+  { label: '🐙 GitHub Actions Docs', url: 'https://docs.github.com/fr/actions' },
+  { label: '🦊 GitLab CI/CD Docs', url: 'https://docs.gitlab.com/ee/ci/' },
+  { label: '🏗️ Jenkins Docs', url: 'https://www.jenkins.io/doc/book/pipeline/' },
   { label: '🔷 Atlassian Tutorials', url: 'https://www.atlassian.com/fr/git/tutorials' },
-  { label: '🐙 GitHub Docs', url: 'https://docs.github.com/fr' },
-  { label: '🦊 GitLab Docs', url: 'https://docs.gitlab.com/' },
 ];
 
 export default function Footer() {
@@ -25,7 +25,7 @@ export default function Footer() {
           ))}
         </div>
         <p className="text-center text-xs text-text-muted/60">
-          GitMaster — Plateforme d'apprentissage Git interactive pour étudiants
+          DevMaster — Plateforme d'apprentissage Git & CI/CD interactive
         </p>
       </div>
     </footer>

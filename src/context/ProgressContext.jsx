@@ -1,8 +1,10 @@
 import { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import MODULES from '../data/modules';
+import CICD_MODULES from '../data/cicdModules';
 
 const ProgressContext = createContext(null);
-const STORAGE_KEY = 'gitmaster-progress';
+const STORAGE_KEY = 'devmaster-progress';
+const ALL_MODULES = [...MODULES, ...CICD_MODULES];
 
 /**
  * Lit la progression depuis localStorage.
@@ -62,7 +64,7 @@ export function ProgressProvider({ children }) {
 
   const isModuleComplete = useCallback(
     (moduleId) => {
-      const mod = MODULES.find((m) => m.id === moduleId);
+      const mod = ALL_MODULES.find((m) => m.id === moduleId);
       if (!mod?.exercises?.length) return false;
       return mod.exercises.every((_, i) => completedMap[`${moduleId}-${i}`]);
     },
@@ -114,7 +116,7 @@ export function ProgressProvider({ children }) {
   }, []);
 
   const stats = useMemo(() => {
-    const totalExercises = MODULES.reduce(
+    const totalExercises = ALL_MODULES.reduce(
       (sum, m) => sum + (m.exercises?.length || 0),
       0
     );

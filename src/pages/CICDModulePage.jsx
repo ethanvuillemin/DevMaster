@@ -1,61 +1,36 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import MODULES from '../data/modules';
+import CICD_MODULES from '../data/cicdModules';
 import { useProgress } from '../context/ProgressContext';
-import { createEngine } from '../engine/GitEngine';
 import MarkdownRenderer from '../components/ui/MarkdownRenderer';
-import Terminal from '../components/ui/Terminal';
-import GitVisualizer from '../components/ui/GitVisualizer';
+import PipelineEditor from '../components/ui/PipelineEditor';
 
-export default function ModulePage() {
+export default function CICDModulePage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const moduleId = parseInt(id, 10);
-  const moduleIndex = MODULES.findIndex((m) => m.id === moduleId);
-  const mod = MODULES[moduleIndex];
+  const moduleIndex = CICD_MODULES.findIndex((m) => m.id === moduleId);
+  const mod = CICD_MODULES[moduleIndex];
 
   const [activeLesson, setActiveLesson] = useState(0);
   const [activeExercise, setActiveExercise] = useState(0);
-  const [gitState, setGitState] = useState(null);
 
-  const engineRef = useRef(null);
+  const { completeExercise, isExerciseComplete, isModuleComplete, getNextExercise } = useProgress();
 
-  const {
-    completeExercise, isExerciseComplete, isModuleComplete, getNextExercise,
-  } = useProgress();
-
-  // Reset engine when exercise changes
-  useEffect(() => {
-    const engine = createEngine();
-    const exercise = mod?.exercises?.[activeExercise];
-    if (exercise?.setup) {
-      exercise.setup.forEach((cmd) => engine.execute(cmd));
-    }
-    engineRef.current = engine;
-    setGitState(engine.getState());
-  }, [moduleId, activeExercise]);
-
-  // Reset when module changes
   useEffect(() => {
     setActiveLesson(0);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (mod?.exercises) {
-      const firstIncomplete = mod.exercises.findIndex((_, i) => !isExerciseComplete(moduleId, i));
-      setActiveExercise(firstIncomplete >= 0 ? firstIncomplete : 0);
-    } else {
-      setActiveExercise(0);
-    }
+      const first = mod.exercises.findIndex((_, i) => !isExerciseComplete(moduleId, i));
+      setActiveExercise(first >= 0 ? first : 0);
+    } else setActiveExercise(0);
   }, [moduleId]); // eslint-disable-line
-
-  const handleStateChange = useCallback((newState) => {
-    setGitState(newState);
-  }, []);
 
   if (!mod) {
     return (
       <div className="text-center py-20">
         <p className="text-text-muted text-lg mb-4">Module introuvable.</p>
-        <Link to="/git" className="btn-secondary">← Retour à la roadmap</Link>
+        <Link to="/cicd" className="btn-secondary">← Retour à la roadmap CI/CD</Link>
       </div>
     );
   }
@@ -63,21 +38,34 @@ export default function ModulePage() {
   const lesson = mod.lessons[activeLesson];
   const exercise = mod.exercises?.[activeExercise];
   const exerciseAlreadyDone = isExerciseComplete(mod.id, activeExercise);
-  const prevModule = moduleIndex > 0 ? MODULES[moduleIndex - 1] : null;
-  const nextModule = moduleIndex < MODULES.length - 1 ? MODULES[moduleIndex + 1] : null;
+  const prevModule = moduleIndex > 0 ? CICD_MODULES[moduleIndex - 1] : null;
+  const nextModule = moduleIndex < CICD_MODULES.length - 1 ? CICD_MODULES[moduleIndex + 1] : null;
 
-  const nextInfo = getNextExercise(mod.id, activeExercise);
+  // Next exercise logic — uses CI/CD module list
+  const getNextCICD = useCallback((curModId, curExIdx) => {
+    const curMod = CICD_MODULES.find((m) => m.id === curModId);
+    if (!curMod?.exercises) return null;
+    const nextIdx = curExIdx + 1;
+    if (nextIdx < curMod.exercises.length) return { moduleId: curModId, exerciseIndex: nextIdx, moduleDone: false, allDone: false };
+    const curIdx = CICD_MODULES.findIndex((m) => m.id === curModId);
+    for (let i = curIdx + 1; i < CICD_MODULES.length; i++) {
+      if (CICD_MODULES[i].exercises?.length > 0) return { moduleId: CICD_MODULES[i].id, exerciseIndex: 0, moduleDone: true, allDone: false };
+    }
+    return { moduleId: null, exerciseIndex: null, moduleDone: true, allDone: true };
+  }, []);
+
+  const nextInfo = getNextCICD(mod.id, activeExercise);
   let nextLabel = 'Exercice suivant →';
   if (nextInfo?.allDone) nextLabel = '🎉 Parcours terminé !';
   else if (nextInfo?.moduleDone) {
-    const nm = MODULES.find((m) => m.id === nextInfo.moduleId);
+    const nm = CICD_MODULES.find((m) => m.id === nextInfo.moduleId);
     nextLabel = `Module suivant : ${nm?.title} →`;
   }
 
   const handleNext = useCallback(() => {
     if (!nextInfo) return;
-    if (nextInfo.allDone) { navigate('/git'); return; }
-    if (nextInfo.moduleDone) { navigate(`/git/module/${nextInfo.moduleId}`); }
+    if (nextInfo.allDone) { navigate('/cicd'); return; }
+    if (nextInfo.moduleDone) { navigate(`/cicd/module/${nextInfo.moduleId}`); }
     else { setActiveExercise(nextInfo.exerciseIndex); }
   }, [nextInfo, navigate]);
 
@@ -86,8 +74,8 @@ export default function ModulePage() {
 
   return (
     <div className="animate-fade-in">
-      <Link to="/git" className="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-secondary transition-colors mb-6">
-        ← Retour à la roadmap Git
+      <Link to="/cicd" className="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-secondary transition-colors mb-6">
+        ← Retour à la roadmap CI/CD
       </Link>
 
       {/* Module header */}
@@ -98,23 +86,20 @@ export default function ModulePage() {
         </div>
         <div className="flex-1 min-w-0">
           <span className="text-xs font-mono font-bold uppercase tracking-wider" style={{ color: mod.colorHex }}>
-            {mod.level} — Module {moduleIndex + 1}/{MODULES.length}
+            {mod.level} — Module {moduleIndex + 1}/{CICD_MODULES.length}
           </span>
           <h1 className="font-display font-extrabold text-2xl sm:text-3xl text-text-primary tracking-tight">{mod.title}</h1>
         </div>
       </div>
 
-      {/* Progress bar */}
       {exCount > 0 && (
         <div className="mb-8 flex items-center gap-3">
           <div className="flex-1 h-2 rounded-full bg-surface-3 overflow-hidden max-w-xs">
             <div className="h-full rounded-full transition-all duration-700 ease-out"
               style={{ width: `${(exDone / exCount) * 100}%`, background: `linear-gradient(90deg, ${mod.colorHex}, ${mod.colorHex}99)` }} />
           </div>
-          <span className="text-xs font-mono text-text-muted">{exDone}/{exCount} exercice{exCount > 1 ? 's' : ''}</span>
-          {isModuleComplete(mod.id) && (
-            <span className="text-xs text-accent-green font-semibold animate-fade-in">✓ Module complété</span>
-          )}
+          <span className="text-xs font-mono text-text-muted">{exDone}/{exCount}</span>
+          {isModuleComplete(mod.id) && <span className="text-xs text-accent-green font-semibold">✓ Complété</span>}
         </div>
       )}
 
@@ -136,7 +121,7 @@ export default function ModulePage() {
         <MarkdownRenderer text={lesson.content} />
         {lesson.links?.length > 0 && (
           <div className="mt-8 p-4 rounded-xl bg-surface-0 border border-surface-3/40">
-            <p className="text-xs font-semibold text-text-muted mb-3">🔗 Ressources</p>
+            <p className="text-xs font-semibold text-text-muted mb-3">🔗 Ressources & Documentation</p>
             <div className="flex flex-col gap-2">
               {lesson.links.map((link) => (
                 <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer"
@@ -152,8 +137,7 @@ export default function ModulePage() {
       {/* Exercises */}
       {mod.exercises?.length > 0 && (
         <section className="mb-10">
-          <h2 className="font-display font-bold text-xl text-text-primary mb-4">🏋️ Exercices pratiques</h2>
-
+          <h2 className="font-display font-bold text-xl text-text-primary mb-4">🏋️ Exercices — Écriture de pipeline</h2>
           {mod.exercises.length > 1 && (
             <div className="flex flex-wrap gap-2 mb-4">
               {mod.exercises.map((ex, i) => {
@@ -172,38 +156,30 @@ export default function ModulePage() {
             </div>
           )}
 
-          {/* Live Git Visualizer */}
-          <div className="mb-4">
-            <GitVisualizer gitState={gitState} />
-          </div>
-
-          {/* Terminal + Engine */}
-          <Terminal
+          <PipelineEditor
             key={`${mod.id}-${activeExercise}`}
             exercise={exercise}
-            engine={engineRef.current}
             alreadyDone={exerciseAlreadyDone}
             onComplete={() => completeExercise(mod.id, activeExercise)}
             onNext={handleNext}
             nextLabel={nextLabel}
-            onStateChange={handleStateChange}
           />
         </section>
       )}
 
-      {/* Module navigation */}
+      {/* Module nav */}
       <div className="flex justify-between items-center pt-6 border-t border-surface-3/30">
         {prevModule ? (
-          <button onClick={() => navigate(`/git/module/${prevModule.id}`)} className="btn-secondary text-sm">
+          <button onClick={() => navigate(`/cicd/module/${prevModule.id}`)} className="btn-secondary text-sm">
             ← {prevModule.title}
           </button>
         ) : <div />}
         {nextModule ? (
-          <button onClick={() => navigate(`/git/module/${nextModule.id}`)} className="btn-primary text-sm">
+          <button onClick={() => navigate(`/cicd/module/${nextModule.id}`)} className="btn-primary text-sm">
             {nextModule.title} →
           </button>
         ) : (
-          <Link to="/git" className="btn-primary text-sm">🎉 Parcours terminé !</Link>
+          <Link to="/cicd" className="btn-primary text-sm">🎉 Parcours terminé !</Link>
         )}
       </div>
     </div>

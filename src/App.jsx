@@ -5,6 +5,8 @@ import Home from './pages/Home';
 import Roadmap from './pages/Roadmap';
 import ModulePage from './pages/ModulePage';
 import Cheatsheet from './pages/Cheatsheet';
+import CICDRoadmap from './pages/CICDRoadmap';
+import CICDModulePage from './pages/CICDModulePage';
 
 export default function App() {
   return (
@@ -13,9 +15,16 @@ export default function App() {
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Routes>
           <Route path="/" element={<Home />} />
+          {/* Git track */}
+          <Route path="/git" element={<Roadmap />} />
+          <Route path="/git/module/:id" element={<ModulePage />} />
+          <Route path="/cheatsheet" element={<Cheatsheet />} />
+          {/* Legacy routes */}
           <Route path="/roadmap" element={<Roadmap />} />
           <Route path="/module/:id" element={<ModulePage />} />
-          <Route path="/cheatsheet" element={<Cheatsheet />} />
+          {/* CI/CD track */}
+          <Route path="/cicd" element={<CICDRoadmap />} />
+          <Route path="/cicd/module/:id" element={<CICDModulePage />} />
         </Routes>
       </main>
       <Footer />

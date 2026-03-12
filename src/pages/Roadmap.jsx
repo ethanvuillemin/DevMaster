@@ -50,7 +50,7 @@ export default function Roadmap() {
                 </div>
 
                 <Link
-                  to={`/module/${mod.id}`}
+                  to={`/git/module/${mod.id}`}
                   className="card-interactive p-5 block"
                 >
                   <div className="flex items-start gap-4">
