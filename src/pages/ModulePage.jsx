@@ -172,22 +172,27 @@ export default function ModulePage() {
             </div>
           )}
 
-          {/* Live Git Visualizer */}
-          <div className="mb-4">
-            <GitVisualizer gitState={gitState} />
-          </div>
+          {/* Side-by-side: Terminal + Graph */}
+          <div className="grid grid-cols-1 xl:grid-cols-[1fr_340px] gap-4 items-start">
+            {/* Terminal (main) */}
+            <div className="min-w-0">
+              <Terminal
+                key={`${mod.id}-${activeExercise}`}
+                exercise={exercise}
+                engine={engineRef.current}
+                alreadyDone={exerciseAlreadyDone}
+                onComplete={() => completeExercise(mod.id, activeExercise)}
+                onNext={handleNext}
+                nextLabel={nextLabel}
+                onStateChange={handleStateChange}
+              />
+            </div>
 
-          {/* Terminal + Engine */}
-          <Terminal
-            key={`${mod.id}-${activeExercise}`}
-            exercise={exercise}
-            engine={engineRef.current}
-            alreadyDone={exerciseAlreadyDone}
-            onComplete={() => completeExercise(mod.id, activeExercise)}
-            onNext={handleNext}
-            nextLabel={nextLabel}
-            onStateChange={handleStateChange}
-          />
+            {/* Git Graph (sticky sidebar on desktop) */}
+            <div className="xl:sticky xl:top-20 order-first xl:order-last">
+              <GitVisualizer gitState={gitState} />
+            </div>
+          </div>
         </section>
       )}
 

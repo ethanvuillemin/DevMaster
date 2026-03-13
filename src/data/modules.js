@@ -21,62 +21,190 @@ const MODULES = [
     lessons: [
       {
         title: "Qu'est-ce que Git ?",
-        content: `### Pourquoi Git ?
+        content: `### Le problème que Git résout
 
-**Git** est un **système de contrôle de version distribué** créé en 2005 par **Linus Torvalds** pour gérer le noyau Linux.
+Imaginez un projet avec 10 développeurs. Sans outil de versioning :
 
-Sans Git, dans un projet à 10 développeurs :
-- Qui a modifié quoi ? Mystère.
-- Le code est cassé ? Impossible de revenir en arrière.
-- Travailler en parallèle ? Bon courage avec des clés USB.
+- Marie modifie le fichier \`app.js\` pendant que Paul fait pareil → **conflits**
+- Un bug est introduit vendredi → lundi, impossible de retrouver **qui** a changé **quoi**, **quand**
+- Vous voulez tester une idée sans risquer de casser le projet → vous faites des copies \`projet_v2_final_VRAIMNT_final.zip\` → **chaos**
+
+**Git** est un **système de contrôle de version distribué** (DVCS) qui résout **tous** ces problèmes. Créé en 2005 par **Linus Torvalds** (le créateur de Linux), c'est aujourd'hui l'outil utilisé par **95% des développeurs** dans le monde.
+
+### Comment fonctionne Git ?
+
+Git enregistre l'historique complet de votre projet sous forme de **snapshots** successifs (appelés **commits**). Chaque commit capture l'état de tous les fichiers à un instant donné.
+
+\`\`\`
+Commit 1          Commit 2          Commit 3
+┌──────────┐     ┌──────────┐     ┌──────────┐
+│ index.html│     │ index.html│     │ index.html│
+│ style.css │ ──► │ style.css │ ──► │ style.css │
+│           │     │ app.js    │     │ app.js    │
+└──────────┘     └──────────┘     └──────────┘
+  "Init"        "Ajouter le JS"  "Fix bug #42"
+\`\`\`
 
 ### Les 3 concepts fondamentaux
 
-1. **Repository (dépôt)** — Le dossier de votre projet + tout son historique
-2. **Commit** — Un "snapshot" de votre code à un instant T
-3. **Branch (branche)** — Une ligne de développement indépendante
+1. **Repository (dépôt)** — Le dossier de votre projet + le dossier caché \`.git/\` qui contient tout l'historique. Le \`.git/\` est la "base de données" de Git.
+2. **Commit** — Un snapshot de votre projet à un instant T. Chaque commit a un identifiant unique (hash), un message, un auteur, et une date.
+3. **Branch (branche)** — Une ligne de développement indépendante. Permet de travailler sur une fonctionnalité sans impacter le code principal.
 
-### Git ≠ GitHub ≠ GitLab
+### Git ≠ GitHub ≠ GitLab ≠ Bitbucket
 
-| Concept | Description |
-|---------|------------|
-| **Git** | L'outil en ligne de commande (local) |
-| **GitHub** | Plateforme web (Microsoft) |
-| **GitLab** | Plateforme alternative (auto-hébergeable) |
-| **Bitbucket** | Plateforme d'Atlassian |
+C'est la confusion **la plus fréquente** chez les débutants. Voici la différence :
 
-Git fonctionne **localement**. Les plateformes sont des **services cloud** pour collaborer.`,
+| | **Git** | **GitHub / GitLab / Bitbucket** |
+|---|---------|-------------------------------|
+| **C'est quoi ?** | Un logiciel en ligne de commande | Des plateformes web (sites internet) |
+| **Où ça tourne ?** | **Localement** sur votre machine | Sur des serveurs dans le cloud |
+| **Créé par** | Linus Torvalds (2005) | GitHub Inc. / GitLab Inc. / Atlassian |
+| **Sert à** | Gérer les versions de votre code | **Héberger** des dépôts Git + collaboration |
+| **Peut fonctionner sans l'autre ?** | ✅ Oui, Git fonctionne 100% en local | ❌ Non, ils utilisent Git en interne |
+| **Fonctionnalités en plus** | — | Pull Requests, Issues, Wiki, CI/CD, gestion de projet |
+
+> **Analogie** : Git est comme **un moteur de voiture** (l'outil technique). GitHub/GitLab sont comme **des concessions automobiles** (le service autour de l'outil).
+
+### Pourquoi apprendre la ligne de commande ?
+
+Les interfaces graphiques (VS Code, GitKraken, SourceTree) sont pratiques, mais :
+- Elles ne couvrent **pas toutes les commandes** Git
+- En cas de problème, c'est la CLI qui vous sauve
+- Les serveurs de CI/CD utilisent **uniquement** la CLI
+- Les tutoriels et la doc sont écrits pour la CLI
+- Comprendre la CLI = comprendre **vraiment** Git`,
         links: [
           { label: 'Documentation officielle Git', url: 'https://git-scm.com/doc' },
-          { label: 'Pro Git Book (gratuit)', url: 'https://git-scm.com/book/fr/v2' },
+          { label: 'Pro Git Book (gratuit, en français)', url: 'https://git-scm.com/book/fr/v2' },
+          { label: 'Git — Wikipedia (histoire)', url: 'https://fr.wikipedia.org/wiki/Git' },
+          { label: 'GitHub vs GitLab vs Bitbucket (comparatif)', url: 'https://www.atlassian.com/fr/git/tutorials/bitbucket-vs-github' },
+          { label: 'Comprendre le versioning', url: 'https://git-scm.com/book/fr/v2/D%C3%A9marrage-rapide-%C3%80-propos-de-la-gestion-de-version' },
         ],
       },
       {
         title: 'Installer et configurer Git',
-        content: `### Installation
+        content: `### Installation selon votre système
 
-**Linux :** \`sudo apt install git\`
-**macOS :** \`brew install git\`
-**Windows :** Télécharger sur [git-scm.com](https://git-scm.com/downloads)
-
-### Configuration initiale (obligatoire)
-
+**Linux (Debian/Ubuntu) :**
 \`\`\`bash
-git config --global user.name "Votre Nom"
-git config --global user.email "votre@email.com"
-git config --global init.defaultBranch main
-git config --global core.editor "code --wait"
+sudo apt update && sudo apt install git
 \`\`\`
 
-### Vérifier
+**macOS :**
+\`\`\`bash
+# Option 1 : Homebrew (recommandé)
+brew install git
+
+# Option 2 : Xcode Command Line Tools
+xcode-select --install
+\`\`\`
+
+**Windows :**
+Téléchargez l'installeur sur [git-scm.com/downloads](https://git-scm.com/downloads). Pendant l'installation, gardez les options par défaut. Git Bash sera installé automatiquement (un terminal qui fonctionne comme Linux).
+
+### Vérifier l'installation
 
 \`\`\`bash
 git --version
+# Doit afficher : git version 2.x.x
+\`\`\`
+
+### Configuration initiale (obligatoire)
+
+Git a besoin de savoir **qui vous êtes** pour signer chaque commit :
+
+\`\`\`bash
+# Votre nom (visible dans l'historique)
+git config --global user.name "Votre Nom Complet"
+
+# Votre email (doit correspondre à votre compte GitHub/GitLab)
+git config --global user.email "votre@email.com"
+\`\`\`
+
+### Configurations recommandées
+
+\`\`\`bash
+# Branche par défaut : "main" (au lieu de "master")
+git config --global init.defaultBranch main
+
+# Éditeur de texte pour les messages de commit
+git config --global core.editor "code --wait"   # VS Code
+# OU: git config --global core.editor "nano"     # Nano (plus simple)
+
+# Activer les couleurs dans le terminal
+git config --global color.ui auto
+
+# Vérifier toute la configuration
 git config --list
-\`\`\``,
+\`\`\`
+
+### Les 3 niveaux de configuration
+
+| Niveau | Commande | Portée | Fichier |
+|--------|----------|--------|---------|
+| **System** | \`--system\` | Tous les utilisateurs | \`/etc/gitconfig\` |
+| **Global** | \`--global\` | Votre compte | \`~/.gitconfig\` |
+| **Local** | \`--local\` | Ce dépôt seulement | \`.git/config\` |
+
+Le niveau local prime sur global, qui prime sur system.`,
         links: [
           { label: 'Télécharger Git', url: 'https://git-scm.com/downloads' },
-          { label: 'Paramétrage initial', url: 'https://git-scm.com/book/fr/v2/D%C3%A9marrage-rapide-Param%C3%A9trage-%C3%A0-la-premi%C3%A8re-utilisation-de-Git' },
+          { label: 'Paramétrage à la première utilisation', url: 'https://git-scm.com/book/fr/v2/D%C3%A9marrage-rapide-Param%C3%A9trage-%C3%A0-la-premi%C3%A8re-utilisation-de-Git' },
+          { label: 'git config — Référence', url: 'https://git-scm.com/docs/git-config' },
+        ],
+      },
+      {
+        title: 'Les commandes essentielles',
+        content: `### Référence rapide des commandes de base
+
+Chaque commande Git suit le format : \`git <commande> [options] [arguments]\`
+
+### Créer et inspecter
+
+| Commande | Ce qu'elle fait | Quand l'utiliser |
+|----------|----------------|-----------------|
+| \`git init\` | Crée un nouveau dépôt Git dans le dossier courant | Au début d'un nouveau projet |
+| \`git clone <url>\` | Copie un dépôt distant sur votre machine | Pour rejoindre un projet existant |
+| \`git status\` | Montre l'état de vos fichiers (modifiés, stagés, non-suivis) | **Avant chaque commit** (réflexe !) |
+| \`git log\` | Affiche l'historique des commits | Pour voir ce qui a été fait |
+| \`git log --oneline\` | Version condensée du log (1 ligne par commit) | Usage quotidien |
+| \`git diff\` | Montre les modifications non encore stagées | Pour vérifier ce que vous allez ajouter |
+
+### Enregistrer des modifications
+
+| Commande | Ce qu'elle fait | Quand l'utiliser |
+|----------|----------------|-----------------|
+| \`git add <fichier>\` | Ajoute un fichier à la staging area | Quand un fichier est prêt à être commité |
+| \`git add .\` | Ajoute **tous** les fichiers modifiés | Quand tout est prêt |
+| \`git commit -m "msg"\` | Crée un commit avec un message | Après avoir stagé les fichiers |
+| \`git commit --amend\` | Modifie le dernier commit | Pour corriger un message ou oubli |
+
+### Branches
+
+| Commande | Ce qu'elle fait | Quand l'utiliser |
+|----------|----------------|-----------------|
+| \`git branch\` | Liste les branches | Pour voir où vous en êtes |
+| \`git branch <nom>\` | Crée une nouvelle branche | Pour démarrer une feature |
+| \`git checkout <nom>\` | Bascule sur une branche | Pour changer de contexte |
+| \`git checkout -b <nom>\` | Crée ET bascule | Raccourci très utilisé |
+| \`git merge <branche>\` | Fusionne une branche dans la courante | Quand une feature est terminée |
+
+### Collaboration
+
+| Commande | Ce qu'elle fait | Quand l'utiliser |
+|----------|----------------|-----------------|
+| \`git remote add origin <url>\` | Connecte votre dépôt à un serveur | Une seule fois par projet |
+| \`git push origin <branche>\` | Envoie vos commits sur le serveur | Après avoir commité localement |
+| \`git pull origin <branche>\` | Récupère et fusionne les changements distants | Avant de commencer à travailler |
+| \`git fetch\` | Récupère sans fusionner | Pour vérifier avant de merger |
+
+> **Conseil** : tapez \`git status\` entre chaque commande quand vous débutez. C'est le meilleur moyen de comprendre ce qui se passe.`,
+        links: [
+          { label: 'Référence complète des commandes Git', url: 'https://git-scm.com/docs' },
+          { label: 'Cheatsheet Git (PDF)', url: 'https://education.github.com/git-cheat-sheet-education.pdf' },
+          { label: 'git add — documentation', url: 'https://git-scm.com/docs/git-add' },
+          { label: 'git commit — documentation', url: 'https://git-scm.com/docs/git-commit' },
         ],
       },
     ],
@@ -305,7 +433,9 @@ Leur code
 
 Résolution : éditer → \`git add\` → \`git commit\``,
         links: [
-          { label: 'Branches et fusions', url: 'https://git-scm.com/book/fr/v2/Les-branches-avec-Git-Branches-et-fusions%C2%A0%3A-les-bases' },
+          { label: 'Branches et fusions — Pro Git', url: 'https://git-scm.com/book/fr/v2/Les-branches-avec-Git-Branches-et-fusions%C2%A0%3A-les-bases' },
+          { label: 'git merge — Référence', url: 'https://git-scm.com/docs/git-merge' },
+          { label: 'Résoudre les conflits (Atlassian)', url: 'https://www.atlassian.com/fr/git/tutorials/using-branches/merge-conflicts' },
         ],
       },
     ],
@@ -405,8 +535,12 @@ ssh-keygen -t ed25519 -C "email@example.com"
 cat ~/.ssh/id_ed25519.pub
 \`\`\``,
         links: [
-          { label: 'Travailler avec des dépôts distants', url: 'https://git-scm.com/book/fr/v2/Les-bases-de-Git-Travailler-avec-des-d%C3%A9p%C3%B4ts-distants' },
+          { label: 'Travailler avec des dépôts distants — Pro Git', url: 'https://git-scm.com/book/fr/v2/Les-bases-de-Git-Travailler-avec-des-d%C3%A9p%C3%B4ts-distants' },
           { label: 'SSH GitHub', url: 'https://docs.github.com/fr/authentication/connecting-to-github-with-ssh' },
+          { label: 'SSH GitLab', url: 'https://docs.gitlab.com/ee/user/ssh.html' },
+          { label: 'git push — Référence', url: 'https://git-scm.com/docs/git-push' },
+          { label: 'git pull — Référence', url: 'https://git-scm.com/docs/git-pull' },
+          { label: 'git remote — Référence', url: 'https://git-scm.com/docs/git-remote' },
         ],
       },
     ],
@@ -491,8 +625,11 @@ git rebase -i HEAD~3         # Réécrire les 3 derniers commits
 
 > **Règle d'or** : Ne jamais rebaser des commits déjà poussés et partagés.`,
         links: [
-          { label: 'Git Stash', url: 'https://www.atlassian.com/fr/git/tutorials/saving-changes/git-stash' },
-          { label: 'Rebase interactif', url: 'https://www.atlassian.com/fr/git/tutorials/rewriting-history/git-rebase-i' },
+          { label: 'Git Stash (Atlassian)', url: 'https://www.atlassian.com/fr/git/tutorials/saving-changes/git-stash' },
+          { label: 'Rebase interactif (Atlassian)', url: 'https://www.atlassian.com/fr/git/tutorials/rewriting-history/git-rebase-i' },
+          { label: 'git stash — Référence', url: 'https://git-scm.com/docs/git-stash' },
+          { label: 'git rebase — Référence', url: 'https://git-scm.com/docs/git-rebase' },
+          { label: 'git cherry-pick — Référence', url: 'https://git-scm.com/docs/git-cherry-pick' },
         ],
       },
     ],
@@ -571,8 +708,12 @@ git reflog                  # Tout l'historique
 git reset --hard HEAD@{2}   # Revenir dans le temps
 \`\`\``,
         links: [
-          { label: 'Reset démystifié', url: 'https://git-scm.com/book/fr/v2/Utilitaires-Git-Reset-d%C3%A9mystifi%C3%A9' },
-          { label: 'Undoing Changes', url: 'https://www.atlassian.com/fr/git/tutorials/undoing-changes' },
+          { label: 'Reset démystifié — Pro Git', url: 'https://git-scm.com/book/fr/v2/Utilitaires-Git-Reset-d%C3%A9mystifi%C3%A9' },
+          { label: 'Undoing Changes (Atlassian)', url: 'https://www.atlassian.com/fr/git/tutorials/undoing-changes' },
+          { label: 'git reset — Référence', url: 'https://git-scm.com/docs/git-reset' },
+          { label: 'git revert — Référence', url: 'https://git-scm.com/docs/git-revert' },
+          { label: 'git restore — Référence', url: 'https://git-scm.com/docs/git-restore' },
+          { label: 'git reflog — Référence', url: 'https://git-scm.com/docs/git-reflog' },
         ],
       },
     ],

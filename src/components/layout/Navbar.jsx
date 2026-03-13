@@ -26,7 +26,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 glass border-b border-surface-3/30">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
           <span className="text-2xl transition-transform duration-300 group-hover:rotate-12">🚀</span>

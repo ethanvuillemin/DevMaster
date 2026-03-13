@@ -106,6 +106,80 @@ stages:
           { label: 'GitLab CI/CD Docs', url: 'https://docs.gitlab.com/ee/ci/' },
         ],
       },
+      {
+        title: 'Comprendre le YAML',
+        content: `### Qu'est-ce que le YAML ?
+
+**YAML** (YAML Ain't Markup Language) est un format de données lisible par l'humain. C'est le format utilisé par **toutes** les plateformes CI/CD modernes (GitHub Actions, GitLab CI, CircleCI, etc.) pour décrire les pipelines.
+
+### Pourquoi YAML ?
+
+| Format | Lisibilité | Usage en CI/CD |
+|--------|-----------|---------------|
+| **JSON** | Moyen (accolades, virgules) | Rare |
+| **XML** | Faible (balises verbeuses) | Jenkins legacy |
+| **YAML** | ✅ Excellent (indentation) | Standard actuel |
+| **Groovy** | Code (if/else) | Jenkins Pipelines |
+
+### Syntaxe de base
+
+\`\`\`yaml
+# Ceci est un commentaire
+
+# Clé-valeur simple
+name: Mon Pipeline
+version: 1.0
+
+# Listes (avec tirets)
+fruits:
+  - pomme
+  - banane
+  - cerise
+
+# Objet imbriqué (avec indentation)
+serveur:
+  host: localhost
+  port: 3000
+  debug: true
+
+# Liste d'objets
+utilisateurs:
+  - nom: Alice
+    role: admin
+  - nom: Bob
+    role: dev
+\`\`\`
+
+### ⚠️ Les pièges du YAML
+
+1. **L'indentation est OBLIGATOIRE** — Utilisez des **espaces** (pas des tabulations). 2 espaces par niveau.
+2. **Pas de tabulations** — YAML les interdit. Configurez votre éditeur en "spaces only".
+3. **Les deux-points (:)** doivent être suivis d'un espace : \`clé: valeur\` (pas \`clé:valeur\`)
+4. **Les chaînes avec caractères spéciaux** doivent être entre guillemets : \`message: "Bonjour: monde"\`
+
+### YAML appliqué au CI/CD
+
+\`\`\`yaml
+# Structure type d'un fichier CI/CD
+name: CI Pipeline              # string
+on: push                       # string (déclencheur)
+
+jobs:                          # objet
+  build:                       # objet imbriqué (le job)
+    runs-on: ubuntu-latest     # string
+    steps:                     # liste
+      - uses: actions/checkout@v4    # élément 1
+      - run: npm install             # élément 2
+      - run: npm test                # élément 3
+\`\`\`
+
+Chaque niveau d'indentation représente un **niveau hiérarchique**. C'est comme un plan de document : titre → sous-titre → contenu.`,
+        links: [
+          { label: 'YAML — Tutoriel complet', url: 'https://learnxinyminutes.com/docs/fr-fr/yaml-fr/' },
+          { label: 'YAML Validator en ligne', url: 'https://www.yamllint.com/' },
+          { label: 'YAML Spec officielle', url: 'https://yaml.org/spec/1.2.2/' },
+        ],
+      },
     ],
     exercises: [
       {

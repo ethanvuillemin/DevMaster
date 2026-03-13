@@ -122,6 +122,15 @@ export default function Terminal({
 
   const allHintsUsed = exercise ? hintIndex >= exercise.hints.length - 1 : false;
 
+  const downloadSolution = (title, content) => {
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const blob = new Blob([`# Solution : ${title}\n\n${content}\n`], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `solution-${slug}.txt`;
+    a.click(); URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-0">
       <div className="rounded-xl overflow-hidden border border-surface-3/60 bg-surface-0 font-mono shadow-xl shadow-black/30">
@@ -217,7 +226,13 @@ export default function Terminal({
                 {/* Solution reveal */}
                 {showSolution && (
                   <div className="animate-slide-up p-3 rounded-lg bg-red-950/20 border border-red-900/30">
-                    <p className="text-[11px] text-accent-red/70 uppercase tracking-wider font-bold mb-2">Solution :</p>
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-[11px] text-accent-red/70 uppercase tracking-wider font-bold">Solution :</p>
+                      <button onClick={() => downloadSolution(exercise.title, exercise.solution.join('\n'))}
+                        className="text-[11px] px-2 py-0.5 rounded border border-surface-4 text-text-muted hover:text-text-primary transition-colors">
+                        📥 Télécharger
+                      </button>
+                    </div>
                     <div className="space-y-1">
                       {exercise.solution.map((cmd, i) => (
                         <code key={i} className="block text-xs text-text-primary bg-surface-0/50 px-2 py-1 rounded">
@@ -305,9 +320,17 @@ export default function Terminal({
                 </p>
               </div>
             </div>
-            <button onClick={onNext} className="btn-primary shrink-0 text-sm">
-              {nextLabel || 'Exercice suivant →'}
-            </button>
+            <div className="flex items-center gap-2 shrink-0">
+              {exercise?.solution && (
+                <button onClick={() => downloadSolution(exercise.title, exercise.solution.join('\n'))}
+                  className="btn-secondary text-sm !px-3">
+                  📥 Solution
+                </button>
+              )}
+              <button onClick={onNext} className="btn-primary shrink-0 text-sm">
+                {nextLabel || 'Exercice suivant →'}
+              </button>
+            </div>
           </div>
         </div>
       )}
