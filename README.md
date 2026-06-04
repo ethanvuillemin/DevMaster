@@ -1,4 +1,4 @@
-# 🌿 GitMaster — Plateforme d'apprentissage Git interactive
+# DEVMaster — Plateforme d'apprentissage interactive
 
 Application React + Tailwind CSS pour apprendre Git de zéro à héros, avec un terminal interactif et des exercices validés automatiquement.
 
