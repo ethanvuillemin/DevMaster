@@ -9,6 +9,7 @@ import CICDRoadmap from './pages/CICDRoadmap';
 import CICDModulePage from './pages/CICDModulePage';
 import DockerRoadmap from './pages/DockerRoadmap';
 import DockerModulePage from './pages/DockerModulePage';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
+      <Analytics />
     </div>
   );
 }
