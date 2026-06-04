@@ -301,6 +301,165 @@ jobs:
       ],
     },
   },
+  {
+    id: 'docker',
+    slug: '/docker',
+    icon: '🐳',
+    title: 'Maîtriser Docker',
+    subtitle: 'Conteneurs & Déploiement',
+    desc: 'Du premier conteneur aux stacks de production, en tout petits pas. Chaque notion Docker est découpée progressivement, avec le code fourni clé en main et des solutions à chaque étape.',
+    tags: ['devops', 'dev'],
+    color: '#22d3ee',
+    gradient: 'from-cyan-500/20 to-cyan-500/5',
+    borderColor: 'border-cyan-500/20',
+    features: ['Progression très douce', '38 exercices progressifs', 'Code fourni clé en main'],
+    moduleIdRange: [200, 299], // IDs 200-299 = Docker modules
+    capstone: {
+      title: '🏆 Projet final : Conteneuriser et livrer une app full-stack',
+      scenario: `Vous êtes l'ingénieur DevOps d'une jeune entreprise. L'équipe a développé une application full-stack (front React, API Node, base PostgreSQL) mais tout tourne « à la main » sur le poste de chaque développeur.
+
+**Objectif** : conteneuriser l'ensemble, l'orchestrer avec Compose, durcir les images pour la production, et automatiser la publication des images. À la fin, n'importe qui démarre le projet avec une seule commande, et chaque push publie une image prête à déployer.`,
+      tasks: [
+        {
+          title: '1. Dockerfile multi-stage pour le front',
+          instructions: `Conteneurisez le front React avec un build multi-stage (Node pour builder, Nginx pour servir) :
+
+\`\`\`dockerfile
+# client/Dockerfile
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+\`\`\``,
+        },
+        {
+          title: '2. Dockerfile durci pour l\'API',
+          instructions: `Conteneurisez l'API Node en respectant le cache et la sécurité (utilisateur non-root) :
+
+\`\`\`dockerfile
+# api/Dockerfile
+FROM node:20-alpine
+WORKDIR /app
+COPY --chown=node:node package*.json ./
+RUN npm ci --omit=dev
+COPY --chown=node:node . .
+USER node
+EXPOSE 5000
+HEALTHCHECK --interval=30s --timeout=3s --retries=3 \\
+  CMD wget -qO- http://localhost:5000/health || exit 1
+CMD ["node", "server.js"]
+\`\`\``,
+        },
+        {
+          title: '3. Orchestration avec Compose',
+          instructions: `Décrivez toute la stack dans un compose.yaml : client, api et postgres avec volume et healthcheck :
+
+\`\`\`yaml
+services:
+  client:
+    build: ./client
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+
+  api:
+    build: ./api
+    environment:
+      DATABASE_URL: postgres://postgres:secret@db:5432/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 5
+
+volumes:
+  pgdata:
+\`\`\``,
+        },
+        {
+          title: '4. Réglages de production',
+          instructions: `Ajoutez les contraintes de production sur les services applicatifs : limites de ressources, restart policy et rotation des logs.
+
+\`\`\`yaml
+  api:
+    build: ./api
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+\`\`\`
+
+Démarrez la stack : \`docker compose up -d --build\`, puis vérifiez : \`docker compose ps\` et \`docker compose logs -f api\`.`,
+        },
+        {
+          title: '5. Pipeline de publication automatique',
+          instructions: `Automatisez la construction et la publication des images sur GHCR à chaque push sur main :
+
+\`\`\`yaml
+# .github/workflows/deliver.yml
+name: Deliver
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: \${{ github.actor }}
+          password: \${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./api
+          push: true
+          tags: ghcr.io/\${{ github.repository }}-api:\${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+\`\`\`
+
+**Résultat** : chaque push produit une image taguée et publiée, prête à être déployée par un simple \`docker compose pull && docker compose up -d\`.`,
+        },
+      ],
+      skills: ['Dockerfile multi-stage', 'images non-root', 'docker compose', 'volumes & réseaux', 'healthchecks', 'build & push CI'],
+      links: [
+        { label: 'Docker — Get Started', url: 'https://docs.docker.com/get-started/' },
+        { label: 'Awesome Compose (exemples)', url: 'https://github.com/docker/awesome-compose' },
+        { label: 'Publishing Docker images', url: 'https://docs.github.com/en/actions/publishing-packages/publishing-docker-images' },
+      ],
+    },
+  },
 ];
 
 export default TRACKS;

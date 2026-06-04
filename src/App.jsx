@@ -4,9 +4,11 @@ import Footer from './components/layout/Footer';
 import Home from './pages/Home';
 import Roadmap from './pages/Roadmap';
 import ModulePage from './pages/ModulePage';
-import Cheatsheet from './pages/Cheatsheet';
+import Cheatsheets from './pages/Cheatsheets';
 import CICDRoadmap from './pages/CICDRoadmap';
 import CICDModulePage from './pages/CICDModulePage';
+import DockerRoadmap from './pages/DockerRoadmap';
+import DockerModulePage from './pages/DockerModulePage';
 
 export default function App() {
   return (
@@ -18,13 +20,18 @@ export default function App() {
           {/* Git track */}
           <Route path="/git" element={<Roadmap />} />
           <Route path="/git/module/:id" element={<ModulePage />} />
-          <Route path="/cheatsheet" element={<Cheatsheet />} />
+          {/* Cheatsheets */}
+          <Route path="/cheatsheets" element={<Cheatsheets />} />
+          <Route path="/cheatsheet" element={<Cheatsheets />} />
           {/* Legacy routes */}
           <Route path="/roadmap" element={<Roadmap />} />
           <Route path="/module/:id" element={<ModulePage />} />
           {/* CI/CD track */}
           <Route path="/cicd" element={<CICDRoadmap />} />
           <Route path="/cicd/module/:id" element={<CICDModulePage />} />
+          {/* Docker track */}
+          <Route path="/docker" element={<DockerRoadmap />} />
+          <Route path="/docker/module/:id" element={<DockerModulePage />} />
         </Routes>
       </main>
       <Footer />

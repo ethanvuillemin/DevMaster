@@ -1,11 +1,12 @@
 import { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import MODULES from '../data/modules';
 import CICD_MODULES from '../data/cicdModules';
+import DOCKER_MODULES from '../data/dockerModules';
 import TRACKS from '../data/tracks';
 
 const ProgressContext = createContext(null);
 const STORAGE_KEY = 'devmaster-progress';
-const ALL_MODULES = [...MODULES, ...CICD_MODULES];
+const ALL_MODULES = [...MODULES, ...CICD_MODULES, ...DOCKER_MODULES];
 
 function load() {
   try {

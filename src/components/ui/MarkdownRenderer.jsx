@@ -75,13 +75,23 @@ export default function MarkdownRenderer({ text }) {
       return;
     }
 
-    const headers = tableRows[0]
-      .split('|')
-      .map((c) => c.trim())
-      .filter(Boolean);
-    const dataRows = tableRows
-      .slice(2)
-      .map((r) => r.split('|').map((c) => c.trim()).filter(Boolean));
+    // Découpe une ligne de tableau markdown en préservant les cellules vides
+    // (sinon une cellule vide décale toute la ligne et désaligne les colonnes).
+    const splitRow = (r) => {
+      let s = r.trim();
+      if (s.startsWith('|')) s = s.slice(1);
+      if (s.endsWith('|')) s = s.slice(0, -1);
+      return s.split('|').map((c) => c.trim());
+    };
+
+    const headers = splitRow(tableRows[0]);
+    const colCount = headers.length;
+    const dataRows = tableRows.slice(2).map((r) => {
+      const cells = splitRow(r);
+      // Normalise à la largeur des en-têtes pour garder l'alignement
+      while (cells.length < colCount) cells.push('');
+      return cells.slice(0, colCount);
+    });
 
     elements.push(
       <div key={`t-${i}`} className="overflow-x-auto my-4 rounded-lg border border-surface-3/40">

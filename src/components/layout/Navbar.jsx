@@ -14,14 +14,9 @@ export default function Navbar() {
     setResetOpen(false);
   }, [resetProgress]);
 
-  const isGit = pathname.startsWith('/git') || pathname.startsWith('/module') || pathname.startsWith('/roadmap') || pathname === '/cheatsheet';
-  const isCICD = pathname.startsWith('/cicd');
-
   const navLinks = [
     { to: '/', label: 'Accueil', active: pathname === '/' },
-    { to: '/git', label: '🌿 Git', active: isGit },
-    { to: '/cicd', label: '🔄 CI/CD', active: isCICD },
-    { to: '/cheatsheet', label: '📋 Cheatsheet', active: pathname === '/cheatsheet' },
+    { to: '/cheatsheets', label: '📋 Cheatsheets', active: pathname.startsWith('/cheatsheet') },
   ];
 
   return (
