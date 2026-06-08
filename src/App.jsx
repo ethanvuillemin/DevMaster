@@ -2,13 +2,12 @@ import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import Home from './pages/Home';
-import Roadmap from './pages/Roadmap';
+import TrackRoadmap from './pages/TrackRoadmap';
 import ModulePage from './pages/ModulePage';
-import Cheatsheets from './pages/Cheatsheets';
-import CICDRoadmap from './pages/CICDRoadmap';
 import CICDModulePage from './pages/CICDModulePage';
-import DockerRoadmap from './pages/DockerRoadmap';
 import DockerModulePage from './pages/DockerModulePage';
+import MLModulePage from './pages/MLModulePage';
+import Cheatsheets from './pages/Cheatsheets';
 import { Analytics } from '@vercel/analytics/react';
 
 export default function App() {
@@ -18,21 +17,30 @@ export default function App() {
       <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Routes>
           <Route path="/" element={<Home />} />
-          {/* Git track */}
-          <Route path="/git" element={<Roadmap />} />
+
+          {/* Git */}
+          <Route path="/git"            element={<TrackRoadmap trackId="git" />} />
           <Route path="/git/module/:id" element={<ModulePage />} />
+
+          {/* CI/CD */}
+          <Route path="/cicd"            element={<TrackRoadmap trackId="cicd" />} />
+          <Route path="/cicd/module/:id" element={<CICDModulePage />} />
+
+          {/* Docker */}
+          <Route path="/docker"            element={<TrackRoadmap trackId="docker" />} />
+          <Route path="/docker/module/:id" element={<DockerModulePage />} />
+
+          {/* Machine Learning */}
+          <Route path="/ml"            element={<TrackRoadmap trackId="ml" />} />
+          <Route path="/ml/module/:id" element={<MLModulePage />} />
+
           {/* Cheatsheets */}
           <Route path="/cheatsheets" element={<Cheatsheets />} />
-          <Route path="/cheatsheet" element={<Cheatsheets />} />
-          {/* Legacy routes */}
-          <Route path="/roadmap" element={<Roadmap />} />
-          <Route path="/module/:id" element={<ModulePage />} />
-          {/* CI/CD track */}
-          <Route path="/cicd" element={<CICDRoadmap />} />
-          <Route path="/cicd/module/:id" element={<CICDModulePage />} />
-          {/* Docker track */}
-          <Route path="/docker" element={<DockerRoadmap />} />
-          <Route path="/docker/module/:id" element={<DockerModulePage />} />
+          <Route path="/cheatsheet"  element={<Cheatsheets />} />
+
+          {/* Legacy */}
+          <Route path="/roadmap"       element={<TrackRoadmap trackId="git" />} />
+          <Route path="/module/:id"    element={<ModulePage />} />
         </Routes>
       </main>
       <Footer />

@@ -2,67 +2,155 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ════════════════════════════════════════════════
+   Thème DARK (défaut)
+   Appliqué via html[data-theme="dark"] ET :root
+   pour couvrir le flash avant que React monte
+   ════════════════════════════════════════════════ */
+:root,
+html[data-theme="dark"] {
+  --surface-0: #021520;
+  --surface-1: #032B43;
+  --surface-2: #043a5a;
+  --surface-3: #0a4d74;
+  --surface-4: #10608e;
+
+  --text-primary:   #e8f4f8;
+  --text-secondary: #a8c8dc;
+  --text-muted:     #5a8097;
+
+  --scrollbar-thumb: #0a4d74;
+  --scrollbar-track: #021520;
+  --selection-bg:    rgba(89, 205, 144, 0.28);
+
+  --glass-bg:     rgba(3, 43, 67, 0.88);
+  --glass-border: rgba(10, 77, 116, 0.5);
+
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* ════════════════════════════════════════════════
+   Thème LIGHT
+   ════════════════════════════════════════════════ */
+html[data-theme="light"] {
+  --surface-0: #eef6fb;
+  --surface-1: #ffffff;
+  --surface-2: #ddeef8;
+  --surface-3: #b8d8ee;
+  --surface-4: #7fb8d8;
+
+  --text-primary:   #032B43;
+  --text-secondary: #1a5272;
+  --text-muted:     #4a7a96;
+
+  --scrollbar-thumb: #b8d8ee;
+  --scrollbar-track: #eef6fb;
+  --selection-bg:    rgba(89, 205, 144, 0.4);
+
+  --glass-bg:     rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(184, 216, 238, 0.7);
+
+  --shadow-card: 0 4px 20px rgba(3, 43, 67, 0.12);
+}
+
+/* ════════════════════════════════════════════════
+   Transition douce entre thèmes
+   ════════════════════════════════════════════════ */
+html {
+  background-color: var(--surface-0);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.2s ease;
+}
+
+body {
+  background-color: var(--surface-0);
+  color: var(--text-primary);
+}
+
+body,
+.card, .card-interactive, nav, footer,
+[class*="bg-surface"],
+[class*="border-surface"],
+[class*="text-text"] {
+  transition:
+    background-color 0.3s ease,
+    border-color     0.3s ease,
+    color            0.2s ease,
+    box-shadow       0.3s ease;
+}
+
 @layer base {
   * {
     scrollbar-width: thin;
-    scrollbar-color: #243049 #0b0f1a;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   }
-
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #0b0f1a;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #243049;
-    border-radius: 3px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #334155;
-  }
+  ::-webkit-scrollbar         { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track   { background: var(--scrollbar-track); }
+  ::-webkit-scrollbar-thumb   { background: var(--scrollbar-thumb); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--surface-4); }
 
   ::selection {
-    background: rgba(52, 211, 153, 0.25);
-    color: #f1f5f9;
+    background: var(--selection-bg);
+    color: var(--text-primary);
   }
 }
 
 @layer components {
   .btn-primary {
     @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl font-display font-bold text-sm
-           bg-gradient-to-r from-accent-green to-emerald-500
-           text-surface-0 shadow-lg shadow-accent-green/20
-           hover:shadow-accent-green/40 hover:-translate-y-0.5
-           active:translate-y-0
+           bg-gradient-to-r from-accent-green to-emerald-400
+           shadow-lg
+           hover:-translate-y-0.5 active:translate-y-0
            transition-all duration-200;
+    color: var(--surface-0);
+    box-shadow: 0 4px 14px rgba(89, 205, 144, 0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(89, 205, 144, 0.45);
   }
 
   .btn-secondary {
     @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl font-display font-semibold text-sm
-           bg-surface-2 text-text-secondary border border-surface-4
-           hover:text-text-primary hover:border-accent-green/30 hover:-translate-y-0.5
-           active:translate-y-0
+           hover:-translate-y-0.5 active:translate-y-0
            transition-all duration-200;
+    background: var(--surface-2);
+    color: var(--text-secondary);
+    border: 1px solid var(--surface-3);
+  }
+  .btn-secondary:hover {
+    color: var(--text-primary);
+    border-color: rgba(89, 205, 144, 0.4);
   }
 
   .card {
-    @apply bg-surface-1 rounded-2xl border border-surface-3/50
-           hover:border-surface-4 transition-all duration-300;
+    @apply rounded-2xl transition-all duration-300;
+    background: var(--surface-1);
+    border: 1px solid var(--surface-3);
+    box-shadow: var(--shadow-card);
+  }
+  .card:hover {
+    border-color: var(--surface-4);
   }
 
   .card-interactive {
-    @apply card cursor-pointer
-           hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20;
+    @apply card cursor-pointer;
+  }
+  .card-interactive:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card);
+    border-color: var(--surface-4);
   }
 
   .glass {
-    @apply bg-surface-1/80 backdrop-blur-xl border border-surface-3/30;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
   }
 
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent-green via-accent-blue to-accent-purple;
+    @apply bg-clip-text text-transparent
+           bg-gradient-to-r from-accent-green via-accent-blue to-accent-purple;
   }
 
   .tag {
@@ -71,10 +159,7 @@
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-
+  .text-balance { text-wrap: balance; }
   .animate-stagger-1 { animation-delay: 0.1s; }
   .animate-stagger-2 { animation-delay: 0.2s; }
   .animate-stagger-3 { animation-delay: 0.3s; }

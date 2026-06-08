@@ -1,19 +1,14 @@
 /**
  * Registre des parcours (tracks) de la plateforme.
- *
- * Chaque track a :
- *   - id, slug pour les routes
- *   - tags[] pour la catégorisation
- *   - capstone : projet pratique de fin de parcours
  */
 
 export const TAGS = {
-  devops: { label: 'DevOps', color: '#34d399', icon: '⚙️' },
-  dev: { label: 'Développement', color: '#60a5fa', icon: '💻' },
-  mlops: { label: 'MLOps', color: '#a78bfa', icon: '🧠' },
-  llmops: { label: 'LLMOps', color: '#f472b6', icon: '🤖' },
-  ia: { label: 'Intelligence Artificielle', color: '#fb923c', icon: '🧬' },
-  fullstack: { label: 'Full Stack', color: '#fbbf24', icon: '🌐' },
+  devops:    { label: 'DevOps',                  color: '#59CD90', icon: '⚙️' },
+  dev:       { label: 'Développement',           color: '#3FA7D6', icon: '💻' },
+  mlops:     { label: 'MLOps',                   color: '#AA7DCE', icon: '🧠' },
+  llmops:    { label: 'LLMOps',                  color: '#F3752B', icon: '🤖' },
+  ia:        { label: 'Intelligence Artificielle',color: '#F3752B', icon: '🧬' },
+  fullstack: { label: 'Full Stack',              color: '#3FA7D6', icon: '🌐' },
 };
 
 const TRACKS = [
@@ -25,11 +20,11 @@ const TRACKS = [
     subtitle: 'Ligne de commande',
     desc: 'De git init au workflow professionnel. Terminal interactif avec moteur Git simulé et graphes SVG en temps réel.',
     tags: ['devops', 'dev'],
-    color: '#34d399',
-    gradient: 'from-emerald-500/20 to-emerald-500/5',
-    borderColor: 'border-emerald-500/20',
+    color: '#59CD90',
+    gradient: 'from-[#59CD90]/15 to-[#59CD90]/5',
+    borderColor: 'border-[#59CD90]/25',
     features: ['Terminal simulé', '23 exercices métier', 'Graphes temps réel'],
-    moduleIdRange: [1, 99],   // IDs 1-99 = Git modules
+    moduleIdRange: [1, 99],
     capstone: {
       title: '🏆 Projet final : Contribuer à un projet open-source',
       scenario: `Vous allez simuler le workflow complet d'un contributeur open-source professionnel.
@@ -46,7 +41,6 @@ git init
 git config user.name "Votre Nom"
 git config user.email "vous@email.com"
 
-# Créer la structure du projet
 echo '{ "name": "mathlib", "version": "1.2.0" }' > package.json
 echo '# MathLib' > README.md
 echo 'function add(a, b) { return a + b; }' > lib.js
@@ -59,26 +53,21 @@ git tag -a v1.2.0 -m "Release 1.2.0"
         },
         {
           title: '2. Simuler le fork et créer la branche de fix',
-          instructions: `Ajoutez le remote "upstream" (le repo original) et créez votre branche de correction :
+          instructions: `Ajoutez le remote "upstream" et créez votre branche de correction :
 
 \`\`\`bash
 git remote add upstream https://github.com/original/mathlib.git
 git remote add origin https://github.com/vous/mathlib.git
-
-# Créer une branche de fix depuis main
 git checkout -b bugfix/fix-negative-numbers
-
-# Vérifier
 git branch
 git remote -v
 \`\`\``,
         },
         {
           title: '3. Coder le fix et commiter proprement',
-          instructions: `Corrigez le bug et faites des commits Conventional Commits :
+          instructions: `Corrigez le bug avec des Conventional Commits :
 
 \`\`\`bash
-# Modifier le code
 echo 'function add(a, b) { return Number(a) + Number(b); }' > lib.js
 echo 'function subtract(a, b) { return Number(a) - Number(b); }' >> lib.js
 echo 'module.exports = { add, subtract };' >> lib.js
@@ -86,11 +75,8 @@ echo 'module.exports = { add, subtract };' >> lib.js
 git add lib.js
 git commit -m "fix(math): gérer les inputs non-numériques dans add()"
 
-# Ajouter des tests
 echo 'const { add } = require("./lib");' > test.js
-echo 'console.assert(add(1, 2) === 3, "1+2 should be 3");' >> test.js
-echo 'console.assert(add("1", "2") === 3, "string inputs");' >> test.js
-
+echo 'console.assert(add(1, 2) === 3);' >> test.js
 git add test.js
 git commit -m "test(math): ajouter les tests pour add() avec strings"
 \`\`\``,
@@ -100,39 +86,21 @@ git commit -m "test(math): ajouter les tests pour add() avec strings"
           instructions: `Vérifiez votre travail et poussez :
 
 \`\`\`bash
-# Vérifier l'historique
 git log --oneline
-
-# Vérifier que tout est clean
 git status
-
-# Pousser la branche
 git push -u origin bugfix/fix-negative-numbers
-
-# Vérifier le résultat
 git log --oneline --all --graph
-\`\`\`
-
-**Sur GitHub/GitLab** : vous ouvririez maintenant une Pull Request / Merge Request depuis \`bugfix/fix-negative-numbers\` vers \`main\` du repo upstream.`,
+\`\`\``,
         },
         {
           title: '5. Après le merge : nettoyer',
-          instructions: `Une fois la PR mergée, nettoyez votre dépôt local :
+          instructions: `Une fois la PR mergée, nettoyez votre dépôt :
 
 \`\`\`bash
-# Revenir sur main
 git checkout main
-
-# Mettre à jour depuis upstream
 git pull upstream main
-
-# Supprimer la branche de fix
 git branch -d bugfix/fix-negative-numbers
-
-# Taguer la nouvelle version
 git tag -a v1.2.1 -m "Patch: fix negative numbers"
-
-# Vérifier
 git log --oneline --all
 git tag
 \`\`\``,
@@ -140,7 +108,7 @@ git tag
       ],
       skills: ['git init/clone', 'branches', 'commits conventionnels', 'remotes', 'tags', 'workflow PR'],
       links: [
-        { label: 'Guide : contribuer à l\'open-source', url: 'https://docs.github.com/fr/get-started/exploring-projects-on-github/contributing-to-a-project' },
+        { label: "Guide : contribuer à l'open-source", url: 'https://docs.github.com/fr/get-started/exploring-projects-on-github/contributing-to-a-project' },
         { label: 'Conventional Commits', url: 'https://www.conventionalcommits.org/fr/' },
       ],
     },
@@ -153,65 +121,44 @@ git tag
     subtitle: 'Pipelines & Déploiement',
     desc: 'GitHub Actions, GitLab CI, Jenkins. Écrivez de vrais pipelines YAML dans un éditeur interactif avec validation.',
     tags: ['devops'],
-    color: '#60a5fa',
-    gradient: 'from-blue-500/20 to-blue-500/5',
-    borderColor: 'border-blue-500/20',
+    color: '#3FA7D6',
+    gradient: 'from-[#3FA7D6]/15 to-[#3FA7D6]/5',
+    borderColor: 'border-[#3FA7D6]/25',
     features: ['Éditeur YAML', '14 exercices pipeline', 'Multi-plateforme'],
-    moduleIdRange: [100, 199], // IDs 100-199 = CI/CD modules
+    moduleIdRange: [100, 199],
     capstone: {
       title: '🏆 Projet final : Pipeline de production full-stack',
-      scenario: `Vous êtes le lead DevOps d'une startup. L'application est un site e-commerce React + API Node.js. Vous devez mettre en place le pipeline CI/CD complet, du push au déploiement.
-
-**Objectif** : Écrire un workflow GitHub Actions qui gère tout le cycle de vie de l'application.`,
+      scenario: `Vous êtes le lead DevOps d'une startup. L'application est un site e-commerce React + API Node.js. Vous devez mettre en place le pipeline CI/CD complet, du push au déploiement.`,
       tasks: [
         {
           title: '1. Pipeline de tests multi-services',
-          instructions: `Créez un workflow qui teste le frontend ET le backend en parallèle :
-
-\`\`\`yaml
-# .github/workflows/ci.yml
+          instructions: `\`\`\`yaml
 name: Full-Stack CI
-
 on:
   push:
     branches: [main, develop]
   pull_request:
     branches: [main]
-
 jobs:
   test-frontend:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm run lint
-      - run: npm test -- --coverage
-
+        with: { node-version: 20 }
+      - run: npm ci && npm run lint && npm test
   test-backend:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm ci
-      - run: npm test
+        with: { node-version: 20 }
+      - run: npm ci && npm test
 \`\`\``,
         },
         {
           title: '2. Build Docker multi-images',
-          instructions: `Ajoutez le build des images Docker après les tests :
-
-\`\`\`yaml
+          instructions: `\`\`\`yaml
   build-images:
     needs: [test-frontend, test-backend]
     runs-on: ubuntu-latest
@@ -224,80 +171,54 @@ jobs:
           password: \${{ secrets.GITHUB_TOKEN }}
       - uses: docker/build-push-action@v5
         with:
-          context: ./frontend
           push: true
-          tags: ghcr.io/startup/frontend:\${{ github.sha }}
-      - uses: docker/build-push-action@v5
-        with:
-          context: ./backend
-          push: true
-          tags: ghcr.io/startup/backend:\${{ github.sha }}
+          tags: ghcr.io/startup/app:\${{ github.sha }}
 \`\`\``,
         },
         {
           title: '3. Déploiement staging automatique',
-          instructions: `Déploiement automatique sur staging quand c'est pushé sur develop :
-
-\`\`\`yaml
+          instructions: `\`\`\`yaml
   deploy-staging:
     needs: build-images
     if: github.ref == 'refs/heads/develop'
-    runs-on: ubuntu-latest
     environment:
       name: staging
       url: https://staging.monshop.com
+    runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "Deploying to staging..."
-          echo "Frontend: ghcr.io/startup/frontend:\${{ github.sha }}"
-          echo "Backend: ghcr.io/startup/backend:\${{ github.sha }}"
+      - run: echo "Deploying to staging..."
 \`\`\``,
         },
         {
           title: '4. Déploiement production protégé',
-          instructions: `Déploiement sur production uniquement sur main, avec protection d'environnement :
-
-\`\`\`yaml
+          instructions: `\`\`\`yaml
   deploy-production:
     needs: build-images
     if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
     environment:
       name: production
       url: https://monshop.com
+    runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "🚀 Deploying to production..."
-          echo "Version: \${{ github.sha }}"
-\`\`\`
-
-**Configuration GitHub** : activez la protection d'environnement "production" avec required reviewers dans Settings → Environments.`,
+      - run: echo "🚀 Deploying to production..."
+\`\`\``,
         },
         {
           title: '5. Notifications et monitoring',
-          instructions: `Ajoutez des notifications Slack/Discord en cas d'échec :
-
-\`\`\`yaml
+          instructions: `\`\`\`yaml
   notify-failure:
     needs: [test-frontend, test-backend, build-images]
     if: failure()
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "❌ Pipeline failed!"
-          echo "Commit: \${{ github.sha }}"
-          echo "Author: \${{ github.actor }}"
-          # Dans la vraie vie : webhook Slack/Discord
-\`\`\`
-
-**Pipeline complet** : le fichier final fait ~100 lignes et couvre tests parallèles → build Docker → deploy staging → deploy production → notifications.`,
+      - run: echo "❌ Pipeline failed — \${{ github.sha }}"
+\`\`\``,
         },
       ],
       skills: ['GitHub Actions', 'Docker build', 'environments', 'conditions', 'secrets', 'notifications'],
       links: [
         { label: 'GitHub Actions — Deploying', url: 'https://docs.github.com/en/actions/deployment' },
         { label: 'Docker Build Push Action', url: 'https://github.com/docker/build-push-action' },
-        { label: 'GitHub Environments', url: 'https://docs.github.com/en/actions/deployment/targeting-different-environments' },
       ],
     },
   },
@@ -307,25 +228,22 @@ jobs:
     icon: '🐳',
     title: 'Maîtriser Docker',
     subtitle: 'Conteneurs & Déploiement',
-    desc: 'Du premier conteneur aux stacks de production, en tout petits pas. Chaque notion Docker est découpée progressivement, avec le code fourni clé en main et des solutions à chaque étape.',
+    desc: 'Du premier conteneur aux stacks de production, en tout petits pas. Progression douce avec code fourni clé en main.',
     tags: ['devops', 'dev'],
-    color: '#22d3ee',
-    gradient: 'from-cyan-500/20 to-cyan-500/5',
-    borderColor: 'border-cyan-500/20',
+    color: '#AA7DCE',
+    gradient: 'from-[#AA7DCE]/15 to-[#AA7DCE]/5',
+    borderColor: 'border-[#AA7DCE]/25',
     features: ['Progression très douce', '38 exercices progressifs', 'Code fourni clé en main'],
-    moduleIdRange: [200, 299], // IDs 200-299 = Docker modules
+    moduleIdRange: [200, 299],
     capstone: {
       title: '🏆 Projet final : Conteneuriser et livrer une app full-stack',
-      scenario: `Vous êtes l'ingénieur DevOps d'une jeune entreprise. L'équipe a développé une application full-stack (front React, API Node, base PostgreSQL) mais tout tourne « à la main » sur le poste de chaque développeur.
+      scenario: `Vous êtes l'ingénieur DevOps d'une jeune entreprise. L'équipe a développé une app full-stack (React + Node + PostgreSQL) mais tout tourne "à la main".
 
-**Objectif** : conteneuriser l'ensemble, l'orchestrer avec Compose, durcir les images pour la production, et automatiser la publication des images. À la fin, n'importe qui démarre le projet avec une seule commande, et chaque push publie une image prête à déployer.`,
+**Objectif** : conteneuriser, orchestrer avec Compose, durcir pour la production, et automatiser la publication.`,
       tasks: [
         {
           title: '1. Dockerfile multi-stage pour le front',
-          instructions: `Conteneurisez le front React avec un build multi-stage (Node pour builder, Nginx pour servir) :
-
-\`\`\`dockerfile
-# client/Dockerfile
+          instructions: `\`\`\`dockerfile
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
@@ -340,11 +258,8 @@ CMD ["nginx", "-g", "daemon off;"]
 \`\`\``,
         },
         {
-          title: '2. Dockerfile durci pour l\'API',
-          instructions: `Conteneurisez l'API Node en respectant le cache et la sécurité (utilisateur non-root) :
-
-\`\`\`dockerfile
-# api/Dockerfile
+          title: "2. Dockerfile durci pour l'API",
+          instructions: `\`\`\`dockerfile
 FROM node:20-alpine
 WORKDIR /app
 COPY --chown=node:node package*.json ./
@@ -352,24 +267,18 @@ RUN npm ci --omit=dev
 COPY --chown=node:node . .
 USER node
 EXPOSE 5000
-HEALTHCHECK --interval=30s --timeout=3s --retries=3 \\
-  CMD wget -qO- http://localhost:5000/health || exit 1
+HEALTHCHECK --interval=30s CMD wget -qO- http://localhost:5000/health || exit 1
 CMD ["node", "server.js"]
 \`\`\``,
         },
         {
           title: '3. Orchestration avec Compose',
-          instructions: `Décrivez toute la stack dans un compose.yaml : client, api et postgres avec volume et healthcheck :
-
-\`\`\`yaml
+          instructions: `\`\`\`yaml
 services:
   client:
     build: ./client
-    ports:
-      - "80:80"
-    depends_on:
-      - api
-
+    ports: ["80:80"]
+    depends_on: [api]
   api:
     build: ./api
     environment:
@@ -377,61 +286,42 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
   db:
     image: postgres:16
     environment:
       POSTGRES_PASSWORD: secret
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+    volumes: [pgdata:/var/lib/postgresql/data]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
-      retries: 5
-
 volumes:
   pgdata:
 \`\`\``,
         },
         {
           title: '4. Réglages de production',
-          instructions: `Ajoutez les contraintes de production sur les services applicatifs : limites de ressources, restart policy et rotation des logs.
-
-\`\`\`yaml
+          instructions: `\`\`\`yaml
   api:
-    build: ./api
     restart: unless-stopped
     deploy:
       resources:
-        limits:
-          cpus: "1.0"
-          memory: 512M
+        limits: { cpus: "1.0", memory: 512M }
     logging:
       driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
-\`\`\`
-
-Démarrez la stack : \`docker compose up -d --build\`, puis vérifiez : \`docker compose ps\` et \`docker compose logs -f api\`.`,
+      options: { max-size: "10m", max-file: "3" }
+\`\`\``,
         },
         {
           title: '5. Pipeline de publication automatique',
-          instructions: `Automatisez la construction et la publication des images sur GHCR à chaque push sur main :
-
-\`\`\`yaml
-# .github/workflows/deliver.yml
+          instructions: `\`\`\`yaml
 name: Deliver
 on:
   push:
     branches: [main]
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    permissions: { contents: read, packages: write }
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
@@ -447,16 +337,151 @@ jobs:
           tags: ghcr.io/\${{ github.repository }}-api:\${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-\`\`\`
-
-**Résultat** : chaque push produit une image taguée et publiée, prête à être déployée par un simple \`docker compose pull && docker compose up -d\`.`,
+\`\`\``,
         },
       ],
       skills: ['Dockerfile multi-stage', 'images non-root', 'docker compose', 'volumes & réseaux', 'healthchecks', 'build & push CI'],
       links: [
         { label: 'Docker — Get Started', url: 'https://docs.docker.com/get-started/' },
-        { label: 'Awesome Compose (exemples)', url: 'https://github.com/docker/awesome-compose' },
-        { label: 'Publishing Docker images', url: 'https://docs.github.com/en/actions/publishing-packages/publishing-docker-images' },
+        { label: 'Awesome Compose', url: 'https://github.com/docker/awesome-compose' },
+      ],
+    },
+  },
+  {
+    id: 'ml',
+    slug: '/ml',
+    icon: '🤖',
+    title: 'Machine Learning',
+    subtitle: 'De zéro à praticien',
+    desc: 'Classification, régression, clustering. Comprendre les algorithmes, choisir les bonnes métriques et construire tes premiers modèles avec scikit-learn.',
+    tags: ['mlops', 'ia'],
+    color: '#F3752B',
+    gradient: 'from-[#F3752B]/15 to-[#F3752B]/5',
+    borderColor: 'border-[#F3752B]/25',
+    features: ['Code Python fourni', '18 modules de 0 à Expert', 'MLOps & déploiement inclus'],
+    moduleIdRange: [300, 399],
+    capstone: {
+      title: '🏆 Projet final : Pipeline ML complet de A à Z',
+      scenario: `Tu es recruté comme junior data scientist dans une fintech. Ta première mission : construire un modèle de détection de fraude bancaire, l'évaluer correctement, et présenter tes résultats au responsable risque.`,
+      tasks: [
+        {
+          title: '1. Exploration et préparation des données',
+          instructions: `\`\`\`python
+import pandas as pd
+import numpy as np
+from sklearn.datasets import make_classification
+
+# Simuler un dataset de fraude (très déséquilibré : 2% de fraudes)
+X, y = make_classification(
+    n_samples=10000, n_features=20, n_informative=10,
+    weights=[0.98, 0.02], random_state=42
+)
+df = pd.DataFrame(X, columns=[f'feature_{i}' for i in range(20)])
+df['fraude'] = y
+
+print(df['fraude'].value_counts())
+print(f"Taux de fraude : {y.mean():.2%}")
+\`\`\``,
+        },
+        {
+          title: '2. Baseline et comparaison de modèles',
+          instructions: `\`\`\`python
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, roc_auc_score
+
+X_train, X_test, y_train, y_test = train_test_split(
+    df.drop('fraude', axis=1), df['fraude'],
+    test_size=0.2, random_state=42, stratify=df['fraude']
+)
+
+for nom, clf in [
+    ("Logistic Regression", LogisticRegression(max_iter=1000)),
+    ("Random Forest", RandomForestClassifier(n_estimators=100, random_state=42)),
+]:
+    clf.fit(X_train, y_train)
+    y_pred = clf.predict(X_test)
+    y_proba = clf.predict_proba(X_test)[:, 1]
+    print(f"\\n=== {nom} ===")
+    print(classification_report(y_test, y_pred))
+    print(f"AUC : {roc_auc_score(y_test, y_proba):.3f}")
+\`\`\``,
+        },
+        {
+          title: '3. Gérer le déséquilibre des classes',
+          instructions: `\`\`\`python
+from sklearn.ensemble import RandomForestClassifier
+
+# class_weight='balanced' : donne plus de poids aux fraudes (rares)
+rf_balanced = RandomForestClassifier(
+    n_estimators=100, class_weight='balanced', random_state=42
+)
+rf_balanced.fit(X_train, y_train)
+y_pred_b = rf_balanced.predict(X_test)
+y_proba_b = rf_balanced.predict_proba(X_test)[:, 1]
+
+print("=== Random Forest (équilibré) ===")
+print(classification_report(y_test, y_pred_b))
+print(f"AUC : {roc_auc_score(y_test, y_proba_b):.3f}")
+\`\`\``,
+        },
+        {
+          title: '4. Optimiser le seuil de décision',
+          instructions: `\`\`\`python
+import matplotlib.pyplot as plt
+from sklearn.metrics import precision_recall_curve
+
+precision, recall, thresholds = precision_recall_curve(y_test, y_proba_b)
+
+plt.figure(figsize=(10, 5))
+plt.plot(thresholds, precision[:-1], label='Precision', color='#3FA7D6')
+plt.plot(thresholds, recall[:-1], label='Recall', color='#F3752B')
+plt.xlabel('Seuil de décision')
+plt.ylabel('Score')
+plt.title('Optimisation du seuil — Fraude bancaire')
+plt.legend()
+plt.axvline(x=0.3, color='gray', linestyle='--', label='Seuil retenu=0.3')
+plt.tight_layout()
+plt.show()
+
+# Appliquer le seuil optimisé
+seuil_optimal = 0.3
+y_pred_final = (y_proba_b >= seuil_optimal).astype(int)
+print(classification_report(y_test, y_pred_final))
+\`\`\``,
+        },
+        {
+          title: '5. Présenter les résultats au responsable risque',
+          instructions: `\`\`\`python
+from sklearn.metrics import confusion_matrix
+
+cm = confusion_matrix(y_test, y_pred_final)
+TN, FP, FN, TP = cm.ravel()
+
+montant_moyen_fraude = 1500  # €
+cout_fausse_alarme = 20      # € (coût investigation)
+
+fraudes_evitees = TP * montant_moyen_fraude
+cout_fa = FP * cout_fausse_alarme
+fraudes_ratees = FN * montant_moyen_fraude
+
+print("=== Rapport pour le responsable risque ===")
+print(f"Fraudes détectées  : {TP} ({TP/(TP+FN):.0%} du total)")
+print(f"Fraudes ratées     : {FN} ({FN/(TP+FN):.0%} du total)")
+print(f"Fausses alarmes    : {FP}")
+print(f"")
+print(f"Économies réalisées : {fraudes_evitees:,.0f} €")
+print(f"Coût des FA         : {cout_fa:,.0f} €")
+print(f"Pertes sur ratés    : {fraudes_ratees:,.0f} €")
+print(f"Bénéfice net estimé : {fraudes_evitees - cout_fa - fraudes_ratees:,.0f} €")
+\`\`\``,
+        },
+      ],
+      skills: ['EDA', 'train/test split', 'classification', 'métriques', 'déséquilibre de classes', 'seuil de décision', 'présentation résultats'],
+      links: [
+        { label: 'scikit-learn — User Guide', url: 'https://scikit-learn.org/stable/user_guide.html' },
+        { label: 'Kaggle — Credit Card Fraud Dataset', url: 'https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud' },
       ],
     },
   },

@@ -12,7 +12,7 @@ const CICD_MODULES = [
   {
     id: 101, level: 'Débutant', icon: '🔄', title: 'Introduction au CI/CD',
     desc: 'Comprendre les concepts fondamentaux de l\'intégration et du déploiement continus.',
-    color: 'green', colorHex: '#34d399',
+    color: 'green', colorHex: '#59CD90',
     lessons: [
       {
         title: 'Qu\'est-ce que le CI/CD ?',
@@ -242,7 +242,7 @@ run-tests:
   {
     id: 102, level: 'Débutant', icon: '🐙', title: 'GitHub Actions',
     desc: 'Maîtriser les workflows GitHub Actions de A à Z.',
-    color: 'blue', colorHex: '#60a5fa',
+    color: 'blue', colorHex: '#3FA7D6',
     lessons: [
       {
         title: 'Structure d\'un workflow',
@@ -498,7 +498,7 @@ jobs:
   {
     id: 103, level: 'Intermédiaire', icon: '🦊', title: 'GitLab CI/CD',
     desc: 'Maîtriser les pipelines GitLab CI/CD.',
-    color: 'purple', colorHex: '#a78bfa',
+    color: 'purple', colorHex: '#AA7DCE',
     lessons: [
       {
         title: 'Structure de .gitlab-ci.yml',
@@ -802,7 +802,7 @@ build:
   {
     id: 104, level: 'Intermédiaire', icon: '🏗️', title: 'Jenkins Pipelines',
     desc: 'Créer des pipelines Jenkins déclaratifs et scriptés.',
-    color: 'pink', colorHex: '#f472b6',
+    color: 'pink', colorHex: '#AA7DCE',
     lessons: [
       {
         title: 'Jenkinsfile déclaratif',
@@ -973,7 +973,7 @@ pipeline {
   {
     id: 105, level: 'Avancé', icon: '🧪', title: 'Tests & Quality Gates',
     desc: 'Automatiser les tests, le linting et la couverture de code.',
-    color: 'orange', colorHex: '#fb923c',
+    color: 'orange', colorHex: '#F3752B',
     lessons: [
       {
         title: 'Stratégie de tests en CI',

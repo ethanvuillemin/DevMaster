@@ -389,7 +389,7 @@ Ton ordinateur peut faire tourner plusieurs services en même temps. Pour ne pas
   {
     id: 204, level: 'Débutant', icon: '🎛️', title: 'Gérer ses conteneurs',
     desc: 'Lister, lire les logs, entrer dans un conteneur, l\'arrêter, le relancer et le supprimer. Le quotidien de Docker.',
-    color: 'blue', colorHex: '#60a5fa',
+    color: 'blue', colorHex: '#3FA7D6',
     lessons: [
       {
         title: 'Voir ce qui tourne et lire les logs',
@@ -694,7 +694,7 @@ docker images                 # vérifie le résultat`,
   {
     id: 206, level: 'Débutant +', icon: '📦', title: 'Ta première image maison',
     desc: 'Construire ta propre image avec un Dockerfile simple : une page web personnalisée servie par nginx. Tout le code est fourni.',
-    color: 'green', colorHex: '#34d399',
+    color: 'green', colorHex: '#59CD90',
     lessons: [
       {
         title: 'Le Dockerfile, ta recette',
@@ -1215,7 +1215,7 @@ CMD ["node", "server.js"]
   {
     id: 209, level: 'Intermédiaire', icon: '🗄️', title: 'Garder ses données : les volumes',
     desc: 'Empêcher la perte de données quand un conteneur est supprimé, grâce aux volumes.',
-    color: 'purple', colorHex: '#a78bfa',
+    color: 'purple', colorHex: '#AA7DCE',
     lessons: [
       {
         title: 'Le problème de l\'éphémère',
@@ -1422,7 +1422,7 @@ docker network inspect app-net   # voir les conteneurs rattachés`,
   {
     id: 211, level: 'Intermédiaire', icon: '🎼', title: 'Docker Compose',
     desc: 'Décrire et lancer toute une stack (plusieurs conteneurs) avec un seul fichier et une seule commande.',
-    color: 'pink', colorHex: '#f472b6',
+    color: 'pink', colorHex: '#AA7DCE',
     lessons: [
       {
         title: 'Pourquoi Compose ?',
@@ -1605,7 +1605,7 @@ volumes:
   {
     id: 212, level: 'Avancé', icon: '🚀', title: 'Publier son image',
     desc: 'Tagger, pousser une image sur un registry, et automatiser la publication avec un pipeline.',
-    color: 'orange', colorHex: '#fb923c',
+    color: 'orange', colorHex: '#F3752B',
     lessons: [
       {
         title: 'Tags & registries',

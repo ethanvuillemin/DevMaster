@@ -17,7 +17,7 @@ const MODULES = [
   {
     id: 1, level: 'Débutant', icon: '🌱', title: 'Découverte de Git',
     desc: 'Comprendre pourquoi Git existe et à quoi il sert.',
-    color: 'green', colorHex: '#34d399',
+    color: 'green', colorHex: '#59CD90',
     lessons: [
       {
         title: "Qu'est-ce que Git ?",
@@ -258,7 +258,7 @@ Chaque commande Git suit le format : \`git <commande> [options] [arguments]\`
   {
     id: 2, level: 'Débutant', icon: '📦', title: 'Les bases : Add, Commit, Status',
     desc: 'Maîtriser le workflow fondamental de Git.',
-    color: 'blue', colorHex: '#60a5fa',
+    color: 'blue', colorHex: '#3FA7D6',
     lessons: [
       {
         title: 'Les 3 zones de Git',
@@ -382,7 +382,7 @@ git commit -m "fix(panier): corriger le total TTC"
   {
     id: 3, level: 'Intermédiaire', icon: '🌿', title: 'Branches & Merge',
     desc: 'Travailler en parallèle et fusionner le code.',
-    color: 'purple', colorHex: '#a78bfa',
+    color: 'purple', colorHex: '#AA7DCE',
     lessons: [
       {
         title: 'Comprendre les branches',
@@ -505,7 +505,7 @@ Résolution : éditer → \`git add\` → \`git commit\``,
   {
     id: 4, level: 'Intermédiaire', icon: '🌐', title: 'Remotes : Push, Pull, Clone',
     desc: 'Collaborer avec des dépôts distants.',
-    color: 'pink', colorHex: '#f472b6',
+    color: 'pink', colorHex: '#AA7DCE',
     lessons: [
       {
         title: 'Travailler avec les remotes',
@@ -597,7 +597,7 @@ cat ~/.ssh/id_ed25519.pub
   {
     id: 5, level: 'Avancé', icon: '⚡', title: 'Rebase, Cherry-pick & Stash',
     desc: 'Techniques avancées pour un historique propre.',
-    color: 'orange', colorHex: '#fb923c',
+    color: 'orange', colorHex: '#F3752B',
     lessons: [
       {
         title: 'Git Stash & Cherry-pick',

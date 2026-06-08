@@ -4,13 +4,16 @@ const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
-    // Check localStorage first
     const saved = localStorage.getItem('devmaster-theme');
     if (saved === 'light' || saved === 'dark') return saved;
-    // Check system preference
     if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
     return 'dark';
   });
+
+  // Appliquer le thème immédiatement (sans attendre useEffect)
+  if (typeof document !== 'undefined') {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
 
   useEffect(() => {
     // Apply theme to document
