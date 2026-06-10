@@ -12,12 +12,16 @@ import MODULES        from './modules';
 import CICD_MODULES   from './cicdModules';
 import DOCKER_MODULES from './dockerModules';
 import ML_MODULES     from './mlModules';
+import DL_MODULES     from './dlModules';
+import DEVOPS_MODULES from './devopsModules';
 
 const MODULE_REGISTRY = {
   git:    MODULES,
   cicd:   CICD_MODULES,
   docker: DOCKER_MODULES,
   ml:     ML_MODULES,
+  dl:     DL_MODULES,
+  devops: DEVOPS_MODULES,
 };
 
 export default MODULE_REGISTRY;

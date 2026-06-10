@@ -15,7 +15,8 @@ export default function CICDModulePage() {
   const [activeLesson, setActiveLesson] = useState(0);
   const [activeExercise, setActiveExercise] = useState(0);
 
-  const { completeExercise, isExerciseComplete, isModuleComplete, getNextExercise } = useProgress();
+  const { completeExercise, isExerciseComplete, isModuleComplete, getNextExercise,
+          markLessonRead, isLessonRead } = useProgress();
 
   useEffect(() => {
     setActiveLesson(0);
@@ -105,15 +106,21 @@ export default function CICDModulePage() {
 
       {/* Lesson tabs */}
       <div className="card p-1 flex gap-1 mb-6 overflow-x-auto">
-        {mod.lessons.map((l, i) => (
-          <button key={i} onClick={() => setActiveLesson(i)}
-            className={`flex-1 min-w-0 px-4 py-2.5 rounded-xl text-sm font-display font-semibold transition-all whitespace-nowrap ${
-              activeLesson === i ? 'text-text-primary' : 'text-text-muted hover:text-text-secondary'
-            }`}
-            style={activeLesson === i ? { background: `${mod.colorHex}15`, color: mod.colorHex } : {}}>
-            📖 {l.title}
-          </button>
-        ))}
+        {mod.lessons.map((l, i) => {
+          const read = isLessonRead(mod.id, i);
+          return (
+            <button key={i} onClick={() => setActiveLesson(i)}
+              className={`flex-1 min-w-0 px-4 py-2.5 rounded-xl text-sm font-display font-semibold transition-all whitespace-nowrap flex items-center justify-center gap-1.5 ${
+                activeLesson === i ? '' : 'text-text-muted hover:text-text-secondary'
+              }`}
+              style={activeLesson === i ? { background: `${mod.colorHex}15`, color: mod.colorHex } : {}}>
+              {read
+                ? <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#3FA7D6" strokeWidth="3" className="shrink-0"><polyline points="20 6 9 17 4 12" /></svg>
+                : <span className="text-xs">📖</span>}
+              <span className="truncate">{l.title}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Lesson content */}
@@ -132,6 +139,23 @@ export default function CICDModulePage() {
             </div>
           </div>
         )}
+        {/* J'ai lu */}
+        <div className="mt-8 pt-6 border-t border-surface-3/30 flex justify-between items-center">
+          <span className="text-xs text-text-muted">Partie {activeLesson + 1} / {mod.lessons.length}</span>
+          {isLessonRead(mod.id, activeLesson) ? (
+            <span className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl border"
+              style={{ color: mod.colorHex, borderColor: `${mod.colorHex}40`, background: `${mod.colorHex}10` }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
+              Partie lue
+            </span>
+          ) : (
+            <button onClick={() => markLessonRead(mod.id, activeLesson)}
+              className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl text-white transition-all hover:opacity-90"
+              style={{ background: mod.colorHex }}>
+              ✓ J'ai lu cette partie
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Exercises */}

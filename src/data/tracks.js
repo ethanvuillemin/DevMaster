@@ -485,6 +485,255 @@ print(f"Bénéfice net estimé : {fraudes_evitees - cout_fa - fraudes_ratees:,.0
       ],
     },
   },
+  {
+    id: 'devops',
+    slug: '/devops',
+    icon: '⚙️',
+    title: 'DevOps / MLOps / LLMOps',
+    subtitle: 'De Linux à l\'IA en production',
+    desc: 'Linux → Docker → Kubernetes → Terraform → GitOps → DevSecOps → MLOps (MLflow, Prefect, BentoML) → LLMOps (vLLM, RAG, LangGraph). Fil rouge : industrialiser une startup SaaS avec IA embarquée.',
+    tags: ['devops', 'mlops', 'llmops'],
+    color: '#3FA7D6',
+    gradient: 'from-[#3FA7D6]/15 to-[#3FA7D6]/5',
+    borderColor: 'border-[#3FA7D6]/25',
+    features: ['15 modules Linux → LLMOps', 'Fil rouge startup MonitAI', 'MLOps + LLMOps inclus'],
+    moduleIdRange: [501, 599],
+    capstone: {
+      title: '🏆 Projet final : Plateforme DevOps + AI complète',
+      scenario: `Tu es le lead DevOps/MLOps de MonitAI. La startup a maintenant un cluster EKS en production, un pipeline MLOps pour la détection d'anomalies, et un assistant RAG basé sur Mistral-7B. Tu dois mettre en place le dernier pilier : l'observabilité complète de toute la stack (infra + ML + LLM) et un agent SRE autonome.`,
+      tasks: [
+        {
+          title: '1. Stack d\'observabilité unifiée',
+          instructions: `\`\`\`bash
+# Prometheus + Grafana (infra) — déjà en place
+# LangFuse (LLM) — ajouter au cluster
+helm upgrade --install langfuse langfuse/langfuse \\
+  --namespace ai --create-namespace \\
+  --set database.url="postgresql://..."
+
+# Dashboard unifié : métriques infra + métriques LLM dans Grafana
+# Panel 1 : CPU/Mem cluster (PromQL)
+# Panel 2 : Latence RAG p95 (LangFuse API → Grafana datasource)
+# Panel 3 : Coût LLM / jour (tokens × prix)
+# Panel 4 : Taux cache hit sémantique
+\`\`\``,
+        },
+        {
+          title: '2. Pipeline CI/CD complet de la stack',
+          instructions: `\`\`\`yaml
+# .github/workflows/full-pipeline.yml
+name: Full Stack Pipeline
+on:
+  push:
+    branches: [main]
+
+jobs:
+  security:
+    uses: ./.github/workflows/security.yml  # Gitleaks + Trivy
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: pytest tests/ --cov
+  release:
+    needs: [security, test]
+    uses: ./.github/workflows/release.yml   # semantic-release
+  deploy:
+    needs: release
+    # ArgoCD sync automatique depuis le tag semver
+    # Image Updater détecte le nouveau tag → commit infra-k8s → sync
+\`\`\``,
+        },
+        {
+          title: '3. Agent SRE autonome (LangGraph)',
+          instructions: `\`\`\`python
+from langgraph.graph import StateGraph, END
+from typing import TypedDict
+
+class SREAgentState(TypedDict):
+    alert: dict         # alertmanager webhook payload
+    analysis: str       # analyse de l'alerte
+    runbook: str        # runbook récupéré via RAG
+    remediation: str    # commande de remédiation proposée
+    executed: bool      # a-t-on exécuté la remédiation ?
+
+# 4 nœuds : analyze → retrieve_runbook → propose → (human_approval) → execute
+# L'agent s'arrête si l'action est destructive et attend une approbation humaine
+\`\`\``,
+        },
+        {
+          title: '4. Cost Management LLM',
+          instructions: `\`\`\`python
+# Budget par feature + semantic cache + routing intelligent
+from gptcache import cache
+
+cache.init(...)  # cache sémantique
+# Questions similaires → 0 appel LLM → économies 40%
+
+# Routing : questions simples → Mistral-7B local (0$)
+#           questions complexes → GPT-4o (5$/1M tokens)
+def smart_router(query: str) -> str:
+    complexity = classify_complexity(query)
+    return "local" if complexity in ["simple", "medium"] else "gpt4o"
+\`\`\``,
+        },
+        {
+          title: '5. Documentation et runbooks as code',
+          instructions: `\`\`\`markdown
+# runbooks/high-cpu-alert.md
+## Alerte : CPU > 90% pendant 10 minutes
+
+### Causes possibles
+1. Pic de trafic légitime → scaler
+2. Boucle infinie dans l'app → redémarrer
+3. Attaque DDoS → rate limit + WAF
+
+### Remédiation automatique
+\`\`\`bash
+kubectl scale deployment api --replicas=$(( $(kubectl get deployment api -o jsonpath='{.spec.replicas}') + 2 ))
+\`\`\`
+
+### Escalade
+Si non résolu après 15 min → alerter l'astreinte via PagerDuty
+\`\`\`
+
+\`\`\`python
+# Indexer tous les runbooks dans pgvector pour le RAG
+loader = DirectoryLoader("runbooks/", glob="**/*.md")
+\`\`\``,
+        },
+      ],
+      skills: ['EKS', 'ArgoCD', 'Prometheus', 'LangFuse', 'LangGraph', 'vLLM', 'RAG', 'semantic cache', 'DevSecOps'],
+      links: [
+        { label: 'LangFuse — self-hosted', url: 'https://langfuse.com/docs/deployment/self-host' },
+        { label: 'LangGraph — documentation', url: 'https://langchain-ai.github.io/langgraph/' },
+        { label: 'ArgoCD — documentation', url: 'https://argo-cd.readthedocs.io/' },
+      ],
+    },
+  },
+  {
+    id: 'dl',
+    slug: '/dl',
+    icon: '🧠',
+    title: 'Deep Learning',
+    subtitle: 'Réseaux de neurones',
+    desc: 'MLP, CNN, LSTM, Transformers, HuggingFace, YOLO, GANs et déploiement. Fil rouge médical : radiology AI de A à Z.',
+    tags: ['mlops', 'ia'],
+    color: '#59CD90',
+    gradient: 'from-[#59CD90]/15 to-[#59CD90]/5',
+    borderColor: 'border-[#59CD90]/25',
+    features: ['Code PyTorch & Keras fourni', '15 modules de 0 à Expert', 'Fil rouge radiology AI'],
+    moduleIdRange: [401, 499],
+    capstone: {
+      title: '🏆 Projet final : Radiology AI — pipeline complet',
+      scenario: `Tu es lead MLE dans une startup de santé numérique. Le prototype de classification de chest X-ray est validé par l'équipe médicale. Tu dois maintenant livrer un système complet : modèle optimisé, API de production, suivi des expériences et pipeline MLOps reproductible.`,
+      tasks: [
+        {
+          title: '1. Fine-tuning EfficientNetB0 avec W&B',
+          instructions: `\`\`\`python
+import wandb, tensorflow as tf
+from tensorflow.keras.applications import EfficientNetB0
+
+wandb.init(project='radiology-capstone', name='efficientnet-final')
+
+base = EfficientNetB0(weights='imagenet', include_top=False, input_shape=(224,224,3))
+base.trainable = False
+
+# Build model, train phase 1 (feature extraction)
+# Log toutes les métriques avec wandb.log(...)
+\`\`\``,
+        },
+        {
+          title: '2. Export ONNX et benchmark de latence',
+          instructions: `\`\`\`python
+import tf2onnx, onnxruntime as ort, numpy as np, time
+
+# Export ONNX
+model = tf.keras.models.load_model('best_model.keras')
+# tf2onnx.convert.from_keras(model, ...)
+
+# Benchmark : mesurer latence fp32 vs int8
+session = ort.InferenceSession('model.onnx')
+dummy   = np.random.randn(1, 224, 224, 3).astype(np.float32)
+times   = []
+for _ in range(200):
+    t0 = time.perf_counter()
+    session.run(None, {'image': dummy})
+    times.append(time.perf_counter() - t0)
+print(f"Latence moyenne : {np.mean(times)*1000:.1f} ms")
+\`\`\``,
+        },
+        {
+          title: '3. API FastAPI + Docker',
+          instructions: `\`\`\`python
+# main.py
+from fastapi import FastAPI, File, UploadFile
+import onnxruntime as ort, numpy as np
+from PIL import Image
+import io
+
+app    = FastAPI(title="Radiology AI API v1.0")
+sess   = ort.InferenceSession("model.onnx")
+LABELS = ['Normal', 'Pneumonie bactérienne', 'Pneumonie virale']
+
+@app.post("/predict")
+async def predict(file: UploadFile = File(...)):
+    img = Image.open(io.BytesIO(await file.read())).resize((224,224)).convert('RGB')
+    x   = np.array(img, dtype=np.float32)[np.newaxis] / 255.0
+    out = sess.run(None, {'image': x})[0]
+    return {"label": LABELS[out.argmax()], "confidence": float(out.max())}
+\`\`\``,
+        },
+        {
+          title: '4. Sweep d\'hyperparamètres W&B (20 trials)',
+          instructions: `\`\`\`python
+import wandb
+
+sweep_config = {
+    'method': 'bayes',
+    'metric': {'name': 'val/auc', 'goal': 'maximize'},
+    'parameters': {
+        'lr':           {'distribution': 'log_uniform_values', 'min': 1e-5, 'max': 1e-3},
+        'batch_size':   {'values': [16, 32, 64]},
+        'dropout':      {'distribution': 'uniform', 'min': 0.1, 'max': 0.5},
+        'fine_tune_n':  {'values': [0, 20, 50]},
+    }
+}
+sweep_id = wandb.sweep(sweep_config, project='radiology-capstone')
+# wandb.agent(sweep_id, function=train, count=20)
+\`\`\``,
+        },
+        {
+          title: '5. Versionner avec DVC et enregistrer dans W&B Registry',
+          instructions: `\`\`\`bash
+# DVC
+dvc init
+dvc add data/chest_xray/
+git add data/chest_xray.dvc .dvcignore
+git commit -m "feat: track chest X-ray dataset v1"
+dvc push
+
+# W&B Model Registry
+\`\`\`
+
+\`\`\`python
+import wandb
+with wandb.init(project='radiology-capstone') as run:
+    artifact = wandb.Artifact('radiology-classifier', type='model',
+                               metadata={'val_auc': 0.97, 'arch': 'efficientnet_b0'})
+    artifact.add_file('model.onnx')
+    run.log_artifact(artifact)
+\`\`\``,
+        },
+      ],
+      skills: ['Transfer Learning', 'ONNX export', 'FastAPI', 'Docker', 'W&B Sweeps', 'DVC', 'Model Registry'],
+      links: [
+        { label: 'W&B — documentation', url: 'https://docs.wandb.ai/' },
+        { label: 'ONNX Runtime — documentation', url: 'https://onnxruntime.ai/' },
+        { label: 'DVC — documentation', url: 'https://dvc.org/doc' },
+      ],
+    },
+  },
 ];
 
 export default TRACKS;

@@ -7,6 +7,8 @@ import ModulePage from './pages/ModulePage';
 import CICDModulePage from './pages/CICDModulePage';
 import DockerModulePage from './pages/DockerModulePage';
 import MLModulePage from './pages/MLModulePage';
+import DLModulePage from './pages/DLModulePage';
+import DevOpsModulePage from './pages/DevOpsModulePage';
 import Cheatsheets from './pages/Cheatsheets';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -33,6 +35,14 @@ export default function App() {
           {/* Machine Learning */}
           <Route path="/ml"            element={<TrackRoadmap trackId="ml" />} />
           <Route path="/ml/module/:id" element={<MLModulePage />} />
+
+          {/* Deep Learning */}
+          <Route path="/dl"            element={<TrackRoadmap trackId="dl" />} />
+          <Route path="/dl/module/:id" element={<DLModulePage />} />
+
+          {/* DevOps / MLOps / LLMOps */}
+          <Route path="/devops"            element={<TrackRoadmap trackId="devops" />} />
+          <Route path="/devops/module/:id" element={<DevOpsModulePage />} />
 
           {/* Cheatsheets */}
           <Route path="/cheatsheets" element={<Cheatsheets />} />

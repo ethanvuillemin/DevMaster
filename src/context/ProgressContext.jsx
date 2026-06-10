@@ -1,32 +1,33 @@
 import { createContext, useContext, useState, useCallback, useMemo } from 'react';
-import MODULES from '../data/modules';
-import CICD_MODULES from '../data/cicdModules';
+import MODULES        from '../data/modules';
+import CICD_MODULES   from '../data/cicdModules';
 import DOCKER_MODULES from '../data/dockerModules';
-import TRACKS from '../data/tracks';
+import ML_MODULES     from '../data/mlModules';
+import DL_MODULES     from '../data/dlModules';
+import DEVOPS_MODULES from '../data/devopsModules';
+import TRACKS         from '../data/tracks';
 
 const ProgressContext = createContext(null);
 const STORAGE_KEY = 'devmaster-progress';
-const ALL_MODULES = [...MODULES, ...CICD_MODULES, ...DOCKER_MODULES];
+const ALL_MODULES = [...MODULES, ...CICD_MODULES, ...DOCKER_MODULES, ...ML_MODULES, ...DL_MODULES, ...DEVOPS_MODULES];
 
 function load() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { exercises: {}, capstones: {} };
+    if (!raw) return { exercises: {}, capstones: {}, readLessons: {} };
     const p = JSON.parse(raw);
     return {
-      exercises: p.exercises || p || {},
-      capstones: p.capstones || {},
+      exercises:   p.exercises   || p || {},
+      capstones:   p.capstones   || {},
+      readLessons: p.readLessons || {},
     };
-  } catch { return { exercises: {}, capstones: {} }; }
+  } catch { return { exercises: {}, capstones: {}, readLessons: {} }; }
 }
 
 function save(data) {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
 }
 
-/**
- * Returns which track a module belongs to by checking ID ranges.
- */
 function getTrackForModule(moduleId) {
   for (const track of TRACKS) {
     const [min, max] = track.moduleIdRange;
@@ -35,9 +36,6 @@ function getTrackForModule(moduleId) {
   return null;
 }
 
-/**
- * Returns modules for a given track ID.
- */
 function getModulesForTrack(trackId) {
   const track = TRACKS.find((t) => t.id === trackId);
   if (!track) return [];
@@ -48,10 +46,36 @@ function getModulesForTrack(trackId) {
 export function ProgressProvider({ children }) {
   const [data, setData] = useState(load);
 
-  const completedMap = data.exercises;
-  const capstonesMap = data.capstones;
+  const completedMap  = data.exercises;
+  const capstonesMap  = data.capstones;
+  const readLessonsMap = data.readLessons || {};
 
-  // ── Exercise completion ───────────────────────
+  // ── Lesson reading ────────────────────────────
+  const markLessonRead = useCallback((moduleId, lessonIndex) => {
+    setData((prev) => {
+      const key = `${moduleId}-lesson-${lessonIndex}`;
+      if (prev.readLessons?.[key]) return prev;
+      const next = { ...prev, readLessons: { ...(prev.readLessons || {}), [key]: true } };
+      save(next);
+      return next;
+    });
+  }, []);
+
+  const isLessonRead = useCallback(
+    (moduleId, lessonIndex) => !!readLessonsMap[`${moduleId}-lesson-${lessonIndex}`],
+    [readLessonsMap]
+  );
+
+  const areAllLessonsRead = useCallback(
+    (moduleId) => {
+      const mod = ALL_MODULES.find((m) => m.id === moduleId);
+      if (!mod?.lessons?.length) return true;
+      return mod.lessons.every((_, i) => readLessonsMap[`${moduleId}-lesson-${i}`]);
+    },
+    [readLessonsMap]
+  );
+
+  // ── Exercise / project completion ─────────────
   const completeExercise = useCallback((moduleId, exerciseIndex) => {
     setData((prev) => {
       const key = `${moduleId}-${exerciseIndex}`;
@@ -70,10 +94,16 @@ export function ProgressProvider({ children }) {
   const isModuleComplete = useCallback(
     (moduleId) => {
       const mod = ALL_MODULES.find((m) => m.id === moduleId);
-      if (!mod?.exercises?.length) return false;
-      return mod.exercises.every((_, i) => completedMap[`${moduleId}-${i}`]);
+      if (!mod) return false;
+      // All lessons must be read
+      const lessonsOk = areAllLessonsRead(moduleId);
+      // All exercises/projects must be done (field can be exercises or projects)
+      const exField = mod.projects || mod.exercises;
+      if (!exField?.length) return lessonsOk;
+      const exOk = exField.every((_, i) => completedMap[`${moduleId}-${i}`]);
+      return lessonsOk && exOk;
     },
-    [completedMap]
+    [completedMap, areAllLessonsRead]
   );
 
   // ── Capstone completion ───────────────────────
@@ -97,20 +127,21 @@ export function ProgressProvider({ children }) {
       const trackId = getTrackForModule(currentModuleId);
       const trackModules = getModulesForTrack(trackId);
       const mod = trackModules.find((m) => m.id === currentModuleId);
-      if (!mod?.exercises) return null;
+      const exField = mod?.projects || mod?.exercises;
+      if (!exField) return null;
 
       const nextIdx = currentExerciseIndex + 1;
-      if (nextIdx < mod.exercises.length) {
+      if (nextIdx < exField.length) {
         return { moduleId: currentModuleId, exerciseIndex: nextIdx, moduleDone: false, allDone: false };
       }
 
       const curIdx = trackModules.findIndex((m) => m.id === currentModuleId);
       for (let i = curIdx + 1; i < trackModules.length; i++) {
-        if (trackModules[i].exercises?.length > 0) {
+        const nextExField = trackModules[i].projects || trackModules[i].exercises;
+        if (nextExField?.length > 0) {
           return { moduleId: trackModules[i].id, exerciseIndex: 0, moduleDone: true, allDone: false };
         }
       }
-
       return { moduleId: null, exerciseIndex: null, moduleDone: true, allDone: true };
     },
     []
@@ -120,51 +151,49 @@ export function ProgressProvider({ children }) {
   const getTrackStats = useCallback(
     (trackId) => {
       const modules = getModulesForTrack(trackId);
-      const totalExercises = modules.reduce((s, m) => s + (m.exercises?.length || 0), 0);
-      let totalCompleted = 0;
+      let totalExercises = 0, totalCompleted = 0;
       modules.forEach((m) => {
-        (m.exercises || []).forEach((_, i) => {
-          if (completedMap[`${m.id}-${i}`]) totalCompleted++;
-        });
+        const exField = m.projects || m.exercises || [];
+        totalExercises += exField.length;
+        exField.forEach((_, i) => { if (completedMap[`${m.id}-${i}`]) totalCompleted++; });
       });
       const percentage = totalExercises > 0 ? Math.round((totalCompleted / totalExercises) * 100) : 0;
-      const capstone = !!capstonesMap[trackId];
-      return { totalExercises, totalCompleted, percentage, capstone };
+      return { totalExercises, totalCompleted, percentage, capstone: !!capstonesMap[trackId] };
     },
     [completedMap, capstonesMap]
   );
 
   // ── Global stats ──────────────────────────────
   const stats = useMemo(() => {
-    const totalExercises = ALL_MODULES.reduce((s, m) => s + (m.exercises?.length || 0), 0);
-    let totalCompleted = 0;
+    let totalExercises = 0, totalCompleted = 0;
     ALL_MODULES.forEach((m) => {
-      (m.exercises || []).forEach((_, i) => {
-        if (completedMap[`${m.id}-${i}`]) totalCompleted++;
-      });
+      const exField = m.projects || m.exercises || [];
+      totalExercises += exField.length;
+      exField.forEach((_, i) => { if (completedMap[`${m.id}-${i}`]) totalCompleted++; });
     });
     const percentage = totalExercises > 0 ? Math.round((totalCompleted / totalExercises) * 100) : 0;
     return { totalExercises, totalCompleted, percentage };
   }, [completedMap]);
 
-  // ── Reset (all or per-track) ──────────────────
+  // ── Reset ─────────────────────────────────────
   const resetProgress = useCallback((trackId = null) => {
     if (!trackId) {
-      // Reset everything
-      setData({ exercises: {}, capstones: {} });
+      setData({ exercises: {}, capstones: {}, readLessons: {} });
       try { localStorage.removeItem(STORAGE_KEY); } catch {}
       return;
     }
-    // Reset specific track
     const modules = getModulesForTrack(trackId);
     setData((prev) => {
       const newEx = { ...prev.exercises };
+      const newRL = { ...(prev.readLessons || {}) };
       modules.forEach((m) => {
-        (m.exercises || []).forEach((_, i) => { delete newEx[`${m.id}-${i}`]; });
+        const exField = m.projects || m.exercises || [];
+        exField.forEach((_, i) => { delete newEx[`${m.id}-${i}`]; });
+        (m.lessons || []).forEach((_, i) => { delete newRL[`${m.id}-lesson-${i}`]; });
       });
       const newCap = { ...prev.capstones };
       delete newCap[trackId];
-      const next = { exercises: newEx, capstones: newCap };
+      const next = { exercises: newEx, capstones: newCap, readLessons: newRL };
       save(next);
       return next;
     });
@@ -173,11 +202,13 @@ export function ProgressProvider({ children }) {
   const value = useMemo(
     () => ({
       completeExercise, isExerciseComplete, isModuleComplete,
+      markLessonRead, isLessonRead, areAllLessonsRead,
       completeCapstone, isCapstoneComplete,
       getNextExercise, getTrackStats,
       resetProgress, stats,
     }),
     [completeExercise, isExerciseComplete, isModuleComplete,
+     markLessonRead, isLessonRead, areAllLessonsRead,
      completeCapstone, isCapstoneComplete,
      getNextExercise, getTrackStats, resetProgress, stats]
   );

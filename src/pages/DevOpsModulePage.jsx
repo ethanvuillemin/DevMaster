@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import ML_MODULES  from '../data/mlModules';
-import ML_PROJECTS from '../data/mlProjects';
+import DEVOPS_MODULES  from '../data/devopsModules';
+import DEVOPS_PROJECTS from '../data/devopsProjects';
 import { useProgress } from '../context/ProgressContext';
 import MarkdownRenderer from '../components/ui/MarkdownRenderer';
 import MiniProject from '../components/ui/MiniProject';
 
-export default function MLModulePage() {
+export default function DevOpsModulePage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const moduleId    = parseInt(id, 10);
-  const moduleIndex = ML_MODULES.findIndex((m) => m.id === moduleId);
-  const mod         = ML_MODULES[moduleIndex];
-  const projects    = ML_PROJECTS[moduleId] || [];
+  const moduleIndex = DEVOPS_MODULES.findIndex((m) => m.id === moduleId);
+  const mod         = DEVOPS_MODULES[moduleIndex];
+  const projects    = DEVOPS_PROJECTS[moduleId] || [];
 
   const [activeLesson, setActiveLesson] = useState(0);
 
@@ -30,7 +30,7 @@ export default function MLModulePage() {
     return (
       <div className="text-center py-20">
         <p className="text-text-muted text-lg mb-4">Module introuvable.</p>
-        <Link to="/ml" className="btn-secondary">← Retour à la roadmap ML</Link>
+        <Link to="/devops" className="btn-secondary">← Retour à la roadmap DevOps</Link>
       </div>
     );
   }
@@ -41,16 +41,16 @@ export default function MLModulePage() {
   const lessonsReadCount = mod.lessons.filter((_, i) => isLessonRead(moduleId, i)).length;
   const projDone         = projects.filter((_, i) => isExerciseComplete(moduleId, i)).length;
   const moduleComplete   = isModuleComplete(moduleId);
-  const prevModule       = moduleIndex > 0 ? ML_MODULES[moduleIndex - 1] : null;
-  const nextModule       = moduleIndex < ML_MODULES.length - 1 ? ML_MODULES[moduleIndex + 1] : null;
+  const prevModule       = moduleIndex > 0 ? DEVOPS_MODULES[moduleIndex - 1] : null;
+  const nextModule       = moduleIndex < DEVOPS_MODULES.length - 1 ? DEVOPS_MODULES[moduleIndex + 1] : null;
 
   return (
     <div className="animate-fade-in">
       <Link
-        to="/ml"
+        to="/devops"
         className="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-secondary transition-colors mb-6"
       >
-        ← Retour à la roadmap Machine Learning
+        ← Retour à la roadmap DevOps / MLOps / LLMOps
       </Link>
 
       {/* Module header */}
@@ -63,7 +63,7 @@ export default function MLModulePage() {
         </div>
         <div className="flex-1 min-w-0">
           <span className="text-xs font-mono font-bold uppercase tracking-wider" style={{ color: mod.colorHex }}>
-            {mod.level} — Module {moduleIndex + 1}/{ML_MODULES.length}
+            {mod.level} — Module {moduleIndex + 1}/{DEVOPS_MODULES.length}
           </span>
           <h1 className="font-display font-extrabold text-2xl sm:text-3xl text-text-primary tracking-tight">
             {mod.title}
@@ -201,8 +201,7 @@ export default function MLModulePage() {
         <section className="mb-10">
           <h2 className="font-display font-bold text-xl text-text-primary mb-1">🚀 Mini-projets métier</h2>
           <p className="text-sm text-text-muted mb-6">
-            Applique les concepts sur des datasets réels issus de sources officielles.
-            Réalise chaque projet sur ta machine, puis marque-le comme terminé.
+            Applique les concepts sur un cas réel (startup MonitAI). Réalise chaque projet sur ta machine, puis marque-le comme terminé.
           </p>
           <div className="space-y-6">
             {projects.map((project, i) => (
@@ -223,16 +222,16 @@ export default function MLModulePage() {
       {/* Module nav */}
       <div className="flex justify-between items-center pt-6 border-t border-surface-3/30">
         {prevModule ? (
-          <button onClick={() => navigate(`/ml/module/${prevModule.id}`)} className="btn-secondary text-sm">
+          <button onClick={() => navigate(`/devops/module/${prevModule.id}`)} className="btn-secondary text-sm">
             ← {prevModule.title}
           </button>
         ) : <div />}
         {nextModule ? (
-          <button onClick={() => navigate(`/ml/module/${nextModule.id}`)} className="btn-primary text-sm">
+          <button onClick={() => navigate(`/devops/module/${nextModule.id}`)} className="btn-primary text-sm">
             {nextModule.title} →
           </button>
         ) : (
-          <Link to="/ml" className="btn-primary text-sm">🎉 Parcours terminé !</Link>
+          <Link to="/devops" className="btn-primary text-sm">🎉 Parcours terminé !</Link>
         )}
       </div>
     </div>
