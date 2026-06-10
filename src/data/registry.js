@@ -14,6 +14,8 @@ import DOCKER_MODULES from './dockerModules';
 import ML_MODULES     from './mlModules';
 import DL_MODULES     from './dlModules';
 import DEVOPS_MODULES from './devopsModules';
+import PYTHON_MODULES from './pythonModules';
+import JS_MODULES     from './jsModules';
 
 const MODULE_REGISTRY = {
   git:    MODULES,
@@ -22,6 +24,8 @@ const MODULE_REGISTRY = {
   ml:     ML_MODULES,
   dl:     DL_MODULES,
   devops: DEVOPS_MODULES,
+  python: PYTHON_MODULES,
+  js:     JS_MODULES,
 };
 
 export default MODULE_REGISTRY;

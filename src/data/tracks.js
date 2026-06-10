@@ -734,6 +734,88 @@ with wandb.init(project='radiology-capstone') as run:
       ],
     },
   },
+  {
+    id: 'python',
+    slug: '/python',
+    icon: '🐍',
+    title: 'Python Zero to Hero',
+    subtitle: 'Piscine intensive',
+    desc: 'De zéro à la maîtrise de Python. Variables, OOP, fonctions avancées, NumPy, Pandas, APIs — avec des dizaines d\'exercices en mode piscine.',
+    tags: ['dev', 'ia'],
+    color: '#3776AB',
+    gradient: 'from-[#3776AB]/15 to-[#3776AB]/5',
+    borderColor: 'border-[#3776AB]/25',
+    features: ['18 modules Débutant → Expert', '80+ exercices piscine', 'NumPy, Pandas & FastAPI'],
+    moduleIdRange: [601, 699],
+    capstone: {
+      title: '🏆 Projet final : Construire une API de données complète',
+      scenario: `Tu es développeur Python dans une startup. Tu dois construire de A à Z une API REST qui ingère des données CSV, les nettoie avec Pandas, expose des statistiques et permet de créer/lire/modifier des entrées.`,
+      tasks: [
+        {
+          title: '1. Ingestion & nettoyage',
+          instructions: `Lire un CSV avec Pandas, gérer les valeurs manquantes, les doublons et les types. Exporter en JSON propre.`,
+        },
+        {
+          title: '2. Classes de domaine',
+          instructions: `Modéliser les entités métier avec des classes Python (héritage, propriétés, méthodes spéciales). Ajouter la sérialisation JSON.`,
+        },
+        {
+          title: '3. API FastAPI',
+          instructions: `Créer une API REST complète (CRUD) avec FastAPI + Pydantic. Documenter avec les docstrings et le Swagger auto-généré.`,
+        },
+        {
+          title: '4. Stats & visualisation ASCII',
+          instructions: `Calculer moyenne, médiane, mode, écart-type sur les données. Afficher un histogramme ASCII en CLI.`,
+        },
+      ],
+      skills: ['Pandas', 'FastAPI', 'Pydantic', 'POO', 'Exceptions', 'Tests', 'argparse'],
+      links: [
+        { label: 'FastAPI — documentation', url: 'https://fastapi.tiangolo.com/' },
+        { label: 'Pandas — documentation', url: 'https://pandas.pydata.org/docs/' },
+      ],
+    },
+  },
+  {
+    id: 'js',
+    slug: '/js',
+    icon: '🟨',
+    title: 'JavaScript Zero to Hero',
+    subtitle: 'Piscine intensive',
+    desc: 'De zéro à la maîtrise de JavaScript moderne. ES6+, DOM, async/await, Node.js, Express, TypeScript — avec des dizaines d\'exercices pratiques.',
+    tags: ['dev', 'fullstack'],
+    color: '#F7DF1E',
+    gradient: 'from-[#F7DF1E]/15 to-[#F7DF1E]/5',
+    borderColor: 'border-[#F7DF1E]/25',
+    features: ['18 modules Débutant → Expert', '70+ exercices piscine', 'Node.js, Express & TypeScript'],
+    moduleIdRange: [701, 799],
+    capstone: {
+      title: '🏆 Projet final : Application full-stack JavaScript',
+      scenario: `Tu es développeur full-stack. Tu dois construire une application de gestion de tâches avec : frontend DOM vanilla, API Express REST, persistance JSON/fichier, tests Jest, et types TypeScript.`,
+      tasks: [
+        {
+          title: '1. API Express',
+          instructions: `Créer une API REST /api/tasks avec CRUD complet, middleware auth par API key, rate limiting et gestion d'erreurs centralisée.`,
+        },
+        {
+          title: '2. Frontend DOM',
+          instructions: `Construire l'interface avec du DOM vanilla : liste de tâches, formulaire, filtres, délégation d'événements, debounce sur la recherche.`,
+        },
+        {
+          title: '3. Fetch & async',
+          instructions: `Connecter le frontend à l'API avec fetch. Implémenter le retry automatique, les indicateurs de chargement et la gestion d'erreurs.`,
+        },
+        {
+          title: '4. Tests Jest',
+          instructions: `Écrire des tests unitaires pour les fonctions utilitaires et des tests d'intégration pour les routes Express (avec mocks).`,
+        },
+      ],
+      skills: ['Express', 'DOM API', 'Fetch', 'Closures', 'Classes', 'Jest', 'TypeScript'],
+      links: [
+        { label: 'Express.js — documentation', url: 'https://expressjs.com/fr/' },
+        { label: 'Jest — documentation', url: 'https://jestjs.io/fr/' },
+      ],
+    },
+  },
 ];
 
 export default TRACKS;

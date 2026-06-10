@@ -9,6 +9,8 @@ import DockerModulePage from './pages/DockerModulePage';
 import MLModulePage from './pages/MLModulePage';
 import DLModulePage from './pages/DLModulePage';
 import DevOpsModulePage from './pages/DevOpsModulePage';
+import PythonModulePage from './pages/PythonModulePage';
+import JSModulePage from './pages/JSModulePage';
 import Cheatsheets from './pages/Cheatsheets';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -43,6 +45,14 @@ export default function App() {
           {/* DevOps / MLOps / LLMOps */}
           <Route path="/devops"            element={<TrackRoadmap trackId="devops" />} />
           <Route path="/devops/module/:id" element={<DevOpsModulePage />} />
+
+          {/* Python */}
+          <Route path="/python"            element={<TrackRoadmap trackId="python" />} />
+          <Route path="/python/module/:id" element={<PythonModulePage />} />
+
+          {/* JavaScript */}
+          <Route path="/js"            element={<TrackRoadmap trackId="js" />} />
+          <Route path="/js/module/:id" element={<JSModulePage />} />
 
           {/* Cheatsheets */}
           <Route path="/cheatsheets" element={<Cheatsheets />} />
