@@ -1,18 +1,34 @@
+/**
+ * Page module générique — fonctionne pour tous les tracks sauf Git (terminal).
+ *
+ * Supporte deux patterns d'exercices :
+ *   A) Embarqués dans le module   → mod.exercises ou mod.projects
+ *   B) Fichier séparé (projects)  → PROJECTS_REGISTRY[trackId][moduleId]
+ */
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import JS_MODULES   from '../data/jsModules';
-import JS_PROJECTS  from '../data/jsProjects';
+import { MODULE_REGISTRY, PROJECTS_REGISTRY } from '../data/registry';
+import TRACKS from '../data/tracks';
 import { useProgress } from '../context/ProgressContext';
 import MarkdownRenderer from '../components/ui/MarkdownRenderer';
 import MiniProject from '../components/ui/MiniProject';
 
-export default function JSModulePage() {
-  const { id } = useParams();
+export default function TrackModulePage() {
+  const { trackId, id } = useParams();
   const navigate = useNavigate();
+
+  const modules  = MODULE_REGISTRY[trackId]   || [];
+  const projMap  = PROJECTS_REGISTRY[trackId] || {};
+  const track    = TRACKS.find((t) => t.id === trackId);
+
   const moduleId    = parseInt(id, 10);
-  const moduleIndex = JS_MODULES.findIndex((m) => m.id === moduleId);
-  const mod         = JS_MODULES[moduleIndex];
-  const projects    = JS_PROJECTS[moduleId] || [];
+  const moduleIndex = modules.findIndex((m) => m.id === moduleId);
+  const mod         = modules[moduleIndex];
+
+  // Projets : fichier séparé en priorité, sinon embarqués dans le module
+  const projects = projMap[moduleId]?.length
+    ? projMap[moduleId]
+    : mod?.projects || mod?.exercises || [];
 
   const [activeLesson, setActiveLesson] = useState(0);
 
@@ -26,34 +42,48 @@ export default function JSModulePage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [moduleId]);
 
-  if (!mod) {
+  // ── Guards ────────────────────────────────────────────────
+  if (!track) {
     return (
       <div className="text-center py-20">
-        <p className="text-text-muted text-lg mb-4">Module introuvable.</p>
-        <Link to="/js" className="btn-secondary">← Retour à la roadmap JavaScript</Link>
+        <p className="text-text-muted text-lg mb-4">Track « {trackId} » introuvable.</p>
+        <Link to="/" className="btn-secondary">← Accueil</Link>
       </div>
     );
   }
 
+  if (!mod) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-text-muted text-lg mb-4">Module introuvable.</p>
+        <Link to={`/${trackId}`} className="btn-secondary">
+          ← Retour à la roadmap {track.title}
+        </Link>
+      </div>
+    );
+  }
+
+  // ── Computed values ───────────────────────────────────────
   const lesson           = mod.lessons[activeLesson];
   const allLessonsRead   = areAllLessonsRead(moduleId);
   const lessonsCount     = mod.lessons.length;
   const lessonsReadCount = mod.lessons.filter((_, i) => isLessonRead(moduleId, i)).length;
   const projDone         = projects.filter((_, i) => isExerciseComplete(moduleId, i)).length;
   const moduleComplete   = isModuleComplete(moduleId);
-  const prevModule       = moduleIndex > 0 ? JS_MODULES[moduleIndex - 1] : null;
-  const nextModule       = moduleIndex < JS_MODULES.length - 1 ? JS_MODULES[moduleIndex + 1] : null;
+  const prevModule       = moduleIndex > 0 ? modules[moduleIndex - 1] : null;
+  const nextModule       = moduleIndex < modules.length - 1 ? modules[moduleIndex + 1] : null;
 
   return (
     <div className="animate-fade-in">
+      {/* ── Breadcrumb ─────────────────────────────────────── */}
       <Link
-        to="/js"
+        to={`/${trackId}`}
         className="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-secondary transition-colors mb-6"
       >
-        ← Retour à la roadmap JavaScript
+        ← Retour à la roadmap {track.title}
       </Link>
 
-      {/* Module header */}
+      {/* ── Module header ──────────────────────────────────── */}
       <div className="flex items-center gap-4 mb-2">
         <div
           className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shrink-0 border"
@@ -63,7 +93,7 @@ export default function JSModulePage() {
         </div>
         <div className="flex-1 min-w-0">
           <span className="text-xs font-mono font-bold uppercase tracking-wider" style={{ color: mod.colorHex }}>
-            {mod.level} — Module {moduleIndex + 1}/{JS_MODULES.length}
+            {mod.level} — Module {moduleIndex + 1}/{modules.length}
           </span>
           <h1 className="font-display font-extrabold text-2xl sm:text-3xl text-text-primary tracking-tight">
             {mod.title}
@@ -71,7 +101,7 @@ export default function JSModulePage() {
         </div>
       </div>
 
-      {/* Progress bars */}
+      {/* ── Progress bars ──────────────────────────────────── */}
       <div className="mb-8 space-y-2">
         <div className="flex items-center gap-3">
           <span className="text-xs text-text-muted w-28 shrink-0">📖 Parties lues</span>
@@ -84,6 +114,7 @@ export default function JSModulePage() {
           <span className="text-xs font-mono text-text-muted">{lessonsReadCount}/{lessonsCount}</span>
           {allLessonsRead && <span className="text-xs text-accent-blue font-semibold">✓ Tout lu</span>}
         </div>
+
         {projects.length > 0 && (
           <div className="flex items-center gap-3">
             <span className="text-xs text-text-muted w-28 shrink-0">🏋️ Exercices</span>
@@ -100,14 +131,13 @@ export default function JSModulePage() {
             {moduleComplete && <span className="text-xs text-accent-green font-semibold">✓ Complété</span>}
           </div>
         )}
+
         {projects.length === 0 && allLessonsRead && (
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-accent-green font-semibold">✓ Module complété — tout lu</span>
-          </div>
+          <span className="text-xs text-accent-green font-semibold">✓ Module complété — tout lu</span>
         )}
       </div>
 
-      {/* Lesson tabs */}
+      {/* ── Lesson tabs ────────────────────────────────────── */}
       <div className="card p-1 flex gap-1 mb-6 overflow-x-auto">
         {mod.lessons.map((l, i) => {
           const read = isLessonRead(moduleId, i);
@@ -133,7 +163,7 @@ export default function JSModulePage() {
         })}
       </div>
 
-      {/* Lesson content */}
+      {/* ── Lesson content ─────────────────────────────────── */}
       <div className="card p-6 sm:p-8 mb-6 animate-fade-in" key={`lesson-${activeLesson}`}>
         <MarkdownRenderer text={lesson.content} />
 
@@ -181,27 +211,27 @@ export default function JSModulePage() {
         </div>
       </div>
 
-      {/* Info banner */}
+      {/* ── Unlock banner ──────────────────────────────────── */}
       {projects.length > 0 && !allLessonsRead && (
         <div className="mb-6 flex items-start gap-3 p-4 rounded-xl border border-accent-blue/20 bg-accent-blue/5">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3FA7D6" strokeWidth="2" className="shrink-0 mt-0.5">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
+            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
           <p className="text-sm text-accent-blue">
             <strong>{lessonsReadCount}/{lessonsCount} parties lues.</strong>
-            {' '}Lis et valide toutes les parties théoriques pour débloquer les exercices.
+            {' '}Lis et valide toutes les parties pour débloquer les exercices.
           </p>
         </div>
       )}
 
-      {/* Exercices piscine */}
+      {/* ── Exercises / Projects ───────────────────────────── */}
       {projects.length > 0 && (
         <section className="mb-10">
-          <h2 className="font-display font-bold text-xl text-text-primary mb-1">🏋️ Exercices — Mode Piscine</h2>
+          <h2 className="font-display font-bold text-xl text-text-primary mb-1">
+            🏋️ Exercices
+          </h2>
           <p className="text-sm text-text-muted mb-6">
-            Résous chaque exercice dans ton éditeur, puis marque-le comme complété. Les niveaux sont indiqués par des étoiles ⭐.
+            Applique les concepts du module. Réalise chaque exercice sur ta machine, puis marque-le comme terminé.
           </p>
           <div className="space-y-6">
             {projects.map((project, i) => (
@@ -219,19 +249,27 @@ export default function JSModulePage() {
         </section>
       )}
 
-      {/* Module nav */}
+      {/* ── Module navigation ──────────────────────────────── */}
       <div className="flex justify-between items-center pt-6 border-t border-surface-3/30">
         {prevModule ? (
-          <button onClick={() => navigate(`/js/module/${prevModule.id}`)} className="btn-secondary text-sm">
+          <button
+            onClick={() => navigate(`/${trackId}/module/${prevModule.id}`)}
+            className="btn-secondary text-sm"
+          >
             ← {prevModule.title}
           </button>
         ) : <div />}
         {nextModule ? (
-          <button onClick={() => navigate(`/js/module/${nextModule.id}`)} className="btn-primary text-sm">
+          <button
+            onClick={() => navigate(`/${trackId}/module/${nextModule.id}`)}
+            className="btn-primary text-sm"
+          >
             {nextModule.title} →
           </button>
         ) : (
-          <Link to="/js" className="btn-primary text-sm">🎉 Parcours terminé !</Link>
+          <Link to={`/${trackId}`} className="btn-primary text-sm">
+            🎉 Parcours terminé !
+          </Link>
         )}
       </div>
     </div>

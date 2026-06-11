@@ -1,17 +1,9 @@
 import { createContext, useContext, useState, useCallback, useMemo } from 'react';
-import MODULES        from '../data/modules';
-import CICD_MODULES   from '../data/cicdModules';
-import DOCKER_MODULES from '../data/dockerModules';
-import ML_MODULES     from '../data/mlModules';
-import DL_MODULES     from '../data/dlModules';
-import DEVOPS_MODULES from '../data/devopsModules';
-import PYTHON_MODULES from '../data/pythonModules';
-import JS_MODULES     from '../data/jsModules';
-import TRACKS         from '../data/tracks';
+import { ALL_MODULES, MODULE_REGISTRY } from '../data/registry';
+import TRACKS from '../data/tracks';
 
 const ProgressContext = createContext(null);
 const STORAGE_KEY = 'devmaster-progress';
-const ALL_MODULES = [...MODULES, ...CICD_MODULES, ...DOCKER_MODULES, ...ML_MODULES, ...DL_MODULES, ...DEVOPS_MODULES, ...PYTHON_MODULES, ...JS_MODULES];
 
 function load() {
   try {
@@ -39,10 +31,7 @@ function getTrackForModule(moduleId) {
 }
 
 function getModulesForTrack(trackId) {
-  const track = TRACKS.find((t) => t.id === trackId);
-  if (!track) return [];
-  const [min, max] = track.moduleIdRange;
-  return ALL_MODULES.filter((m) => m.id >= min && m.id <= max);
+  return MODULE_REGISTRY[trackId] || [];
 }
 
 export function ProgressProvider({ children }) {

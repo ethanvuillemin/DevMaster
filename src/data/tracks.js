@@ -486,128 +486,113 @@ print(f"Bénéfice net estimé : {fraudes_evitees - cout_fa - fraudes_ratees:,.0
     },
   },
   {
-    id: 'devops',
-    slug: '/devops',
-    icon: '⚙️',
-    title: 'DevOps / MLOps / LLMOps',
-    subtitle: 'De Linux à l\'IA en production',
-    desc: 'Linux → Docker → Kubernetes → Terraform → GitOps → DevSecOps → MLOps (MLflow, Prefect, BentoML) → LLMOps (vLLM, RAG, LangGraph). Fil rouge : industrialiser une startup SaaS avec IA embarquée.',
-    tags: ['devops', 'mlops', 'llmops'],
-    color: '#3FA7D6',
-    gradient: 'from-[#3FA7D6]/15 to-[#3FA7D6]/5',
-    borderColor: 'border-[#3FA7D6]/25',
-    features: ['15 modules Linux → LLMOps', 'Fil rouge startup MonitAI', 'MLOps + LLMOps inclus'],
-    moduleIdRange: [501, 599],
+    id: 'genai',
+    slug: '/genai',
+    icon: '🤖',
+    title: 'Generative AI',
+    subtitle: 'LLMs · RAG · Agents',
+    desc: 'LLMs, Prompt Engineering, RAG, LangChain, Agents LangGraph, Fine-tuning LoRA/RLHF, Multimodal et production (vLLM, LangFuse). Fil rouge DocuMind : assistant intelligent sur documents d\'entreprise.',
+    tags: ['ia', 'llmops'],
+    color: '#F3752B',
+    gradient: 'from-[#F3752B]/15 to-[#F3752B]/5',
+    borderColor: 'border-[#F3752B]/25',
+    features: ['15 modules du fondamental à la prod', 'Fil rouge DocuMind', 'Prérequis : ML + DL'],
+    moduleIdRange: [601, 699],
     capstone: {
-      title: '🏆 Projet final : Plateforme DevOps + AI complète',
-      scenario: `Tu es le lead DevOps/MLOps de MonitAI. La startup a maintenant un cluster EKS en production, un pipeline MLOps pour la détection d'anomalies, et un assistant RAG basé sur Mistral-7B. Tu dois mettre en place le dernier pilier : l'observabilité complète de toute la stack (infra + ML + LLM) et un agent SRE autonome.`,
+      title: '🏆 Projet final : DocuMind v1.0 en production',
+      scenario: `Tu es le lead GenAI Engineer de ton entreprise. DocuMind est passé de prototype à produit. Tu dois livrer la version v1.0 : RAG avancé avec reranking, agent conversationnel multi-tours, évaluation RAGAS automatique en CI/CD, guardrails de sécurité et déploiement vLLM.`,
       tasks: [
         {
-          title: '1. Stack d\'observabilité unifiée',
-          instructions: `\`\`\`bash
-# Prometheus + Grafana (infra) — déjà en place
-# LangFuse (LLM) — ajouter au cluster
-helm upgrade --install langfuse langfuse/langfuse \\
-  --namespace ai --create-namespace \\
-  --set database.url="postgresql://..."
+          title: '1. Pipeline RAG avancé',
+          instructions: `\`\`\`python
+from langchain.retrievers import EnsembleRetriever
+from langchain_community.retrievers import BM25Retriever
+from langchain_community.vectorstores import Chroma
+from sentence_transformers import CrossEncoder
 
-# Dashboard unifié : métriques infra + métriques LLM dans Grafana
-# Panel 1 : CPU/Mem cluster (PromQL)
-# Panel 2 : Latence RAG p95 (LangFuse API → Grafana datasource)
-# Panel 3 : Coût LLM / jour (tokens × prix)
-# Panel 4 : Taux cache hit sémantique
+# Hybrid retrieval : BM25 + Dense
+bm25 = BM25Retriever.from_documents(docs, k=10)
+dense = Chroma(...).as_retriever(search_kwargs={"k": 10})
+hybrid = EnsembleRetriever(retrievers=[bm25, dense], weights=[0.3, 0.7])
+
+# Reranking cross-encoder
+reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+# Reranker les top-10 → retourner les top-3
 \`\`\``,
         },
         {
-          title: '2. Pipeline CI/CD complet de la stack',
-          instructions: `\`\`\`yaml
-# .github/workflows/full-pipeline.yml
-name: Full Stack Pipeline
-on:
-  push:
-    branches: [main]
+          title: '2. Agent conversationnel multi-tours',
+          instructions: `\`\`\`python
+from langgraph.graph import StateGraph, END
+from langgraph.checkpoint.memory import MemorySaver
 
+# Graph avec état persistant (historique de conversation)
+# Nœuds : classifier → retrieval/smalltalk → generate
+# MemorySaver pour la continuité inter-sessions
+memory = MemorySaver()
+app = graph.compile(checkpointer=memory)
+
+# Utilisation avec thread_id pour chaque utilisateur
+config = {"configurable": {"thread_id": "user-123"}}
+result = app.invoke({"question": "..."}, config=config)
+\`\`\``,
+        },
+        {
+          title: '3. Évaluation RAGAS en CI/CD',
+          instructions: `\`\`\`yaml
+# .github/workflows/ragas-eval.yml
+name: RAGAS Evaluation Gate
+on: [push]
 jobs:
-  security:
-    uses: ./.github/workflows/security.yml  # Gitleaks + Trivy
-  test:
+  evaluate:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - run: pytest tests/ --cov
-  release:
-    needs: [security, test]
-    uses: ./.github/workflows/release.yml   # semantic-release
-  deploy:
-    needs: release
-    # ArgoCD sync automatique depuis le tag semver
-    # Image Updater détecte le nouveau tag → commit infra-k8s → sync
+    - run: pip install ragas langchain-openai
+    - run: python eval/run_ragas.py --threshold 0.80
+    # Bloque le merge si faithfulness < 0.80
 \`\`\``,
         },
         {
-          title: '3. Agent SRE autonome (LangGraph)',
+          title: '4. Guardrails + Semantic Cache',
           instructions: `\`\`\`python
-from langgraph.graph import StateGraph, END
-from typing import TypedDict
-
-class SREAgentState(TypedDict):
-    alert: dict         # alertmanager webhook payload
-    analysis: str       # analyse de l'alerte
-    runbook: str        # runbook récupéré via RAG
-    remediation: str    # commande de remédiation proposée
-    executed: bool      # a-t-on exécuté la remédiation ?
-
-# 4 nœuds : analyze → retrieve_runbook → propose → (human_approval) → execute
-# L'agent s'arrête si l'action est destructive et attend une approbation humaine
-\`\`\``,
-        },
-        {
-          title: '4. Cost Management LLM',
-          instructions: `\`\`\`python
-# Budget par feature + semantic cache + routing intelligent
+from guardrails import Guard
 from gptcache import cache
 
-cache.init(...)  # cache sémantique
-# Questions similaires → 0 appel LLM → économies 40%
+# Cache sémantique — 40% d'économies
+cache.init(similarity_threshold=0.90)
 
-# Routing : questions simples → Mistral-7B local (0$)
-#           questions complexes → GPT-4o (5$/1M tokens)
-def smart_router(query: str) -> str:
-    complexity = classify_complexity(query)
-    return "local" if complexity in ["simple", "medium"] else "gpt4o"
+# Guardrails — validation input/output
+guard = Guard().use(ToxicLanguage(), on="prompt").use(
+    DetectPII(), on="output", on_fail="fix"
+)
+result = guard(llm_call, prompt=user_input)
 \`\`\``,
         },
         {
-          title: '5. Documentation et runbooks as code',
-          instructions: `\`\`\`markdown
-# runbooks/high-cpu-alert.md
-## Alerte : CPU > 90% pendant 10 minutes
+          title: '5. Déploiement vLLM + LangFuse',
+          instructions: `\`\`\`bash
+# Déployer un modèle local avec vLLM
+docker run --gpus all -p 8000:8000 \\
+  vllm/vllm-openai:latest \\
+  --model mistralai/Mistral-7B-Instruct-v0.3 \\
+  --tensor-parallel-size 1
 
-### Causes possibles
-1. Pic de trafic légitime → scaler
-2. Boucle infinie dans l'app → redémarrer
-3. Attaque DDoS → rate limit + WAF
-
-### Remédiation automatique
-\`\`\`bash
-kubectl scale deployment api --replicas=$(( $(kubectl get deployment api -o jsonpath='{.spec.replicas}') + 2 ))
+# Instrumenter avec LangFuse
 \`\`\`
-
-### Escalade
-Si non résolu après 15 min → alerter l'astreinte via PagerDuty
-\`\`\`
-
 \`\`\`python
-# Indexer tous les runbooks dans pgvector pour le RAG
-loader = DirectoryLoader("runbooks/", glob="**/*.md")
+from langfuse.callback import CallbackHandler
+langfuse_handler = CallbackHandler(public_key="...", secret_key="...")
+chain.invoke({"question": q}, config={"callbacks": [langfuse_handler]})
 \`\`\``,
         },
       ],
-      skills: ['EKS', 'ArgoCD', 'Prometheus', 'LangFuse', 'LangGraph', 'vLLM', 'RAG', 'semantic cache', 'DevSecOps'],
+      skills: ['RAG hybride', 'Reranking', 'LangGraph', 'RAGAS', 'Guardrails', 'vLLM', 'LangFuse', 'Semantic Cache'],
       links: [
-        { label: 'LangFuse — self-hosted', url: 'https://langfuse.com/docs/deployment/self-host' },
         { label: 'LangGraph — documentation', url: 'https://langchain-ai.github.io/langgraph/' },
-        { label: 'ArgoCD — documentation', url: 'https://argo-cd.readthedocs.io/' },
+        { label: 'RAGAS — documentation', url: 'https://docs.ragas.io/' },
+        { label: 'vLLM — documentation', url: 'https://docs.vllm.ai/' },
+        { label: 'LangFuse — documentation', url: 'https://langfuse.com/docs' },
       ],
     },
   },
@@ -734,88 +719,7 @@ with wandb.init(project='radiology-capstone') as run:
       ],
     },
   },
-  {
-    id: 'python',
-    slug: '/python',
-    icon: '🐍',
-    title: 'Python Zero to Hero',
-    subtitle: 'Piscine intensive',
-    desc: 'De zéro à la maîtrise de Python. Variables, OOP, fonctions avancées, NumPy, Pandas, APIs — avec des dizaines d\'exercices en mode piscine.',
-    tags: ['dev', 'ia'],
-    color: '#3776AB',
-    gradient: 'from-[#3776AB]/15 to-[#3776AB]/5',
-    borderColor: 'border-[#3776AB]/25',
-    features: ['18 modules Débutant → Expert', '80+ exercices piscine', 'NumPy, Pandas & FastAPI'],
-    moduleIdRange: [601, 699],
-    capstone: {
-      title: '🏆 Projet final : Construire une API de données complète',
-      scenario: `Tu es développeur Python dans une startup. Tu dois construire de A à Z une API REST qui ingère des données CSV, les nettoie avec Pandas, expose des statistiques et permet de créer/lire/modifier des entrées.`,
-      tasks: [
-        {
-          title: '1. Ingestion & nettoyage',
-          instructions: `Lire un CSV avec Pandas, gérer les valeurs manquantes, les doublons et les types. Exporter en JSON propre.`,
-        },
-        {
-          title: '2. Classes de domaine',
-          instructions: `Modéliser les entités métier avec des classes Python (héritage, propriétés, méthodes spéciales). Ajouter la sérialisation JSON.`,
-        },
-        {
-          title: '3. API FastAPI',
-          instructions: `Créer une API REST complète (CRUD) avec FastAPI + Pydantic. Documenter avec les docstrings et le Swagger auto-généré.`,
-        },
-        {
-          title: '4. Stats & visualisation ASCII',
-          instructions: `Calculer moyenne, médiane, mode, écart-type sur les données. Afficher un histogramme ASCII en CLI.`,
-        },
-      ],
-      skills: ['Pandas', 'FastAPI', 'Pydantic', 'POO', 'Exceptions', 'Tests', 'argparse'],
-      links: [
-        { label: 'FastAPI — documentation', url: 'https://fastapi.tiangolo.com/' },
-        { label: 'Pandas — documentation', url: 'https://pandas.pydata.org/docs/' },
-      ],
-    },
-  },
-  {
-    id: 'js',
-    slug: '/js',
-    icon: '🟨',
-    title: 'JavaScript Zero to Hero',
-    subtitle: 'Piscine intensive',
-    desc: 'De zéro à la maîtrise de JavaScript moderne. ES6+, DOM, async/await, Node.js, Express, TypeScript — avec des dizaines d\'exercices pratiques.',
-    tags: ['dev', 'fullstack'],
-    color: '#F7DF1E',
-    gradient: 'from-[#F7DF1E]/15 to-[#F7DF1E]/5',
-    borderColor: 'border-[#F7DF1E]/25',
-    features: ['18 modules Débutant → Expert', '70+ exercices piscine', 'Node.js, Express & TypeScript'],
-    moduleIdRange: [701, 799],
-    capstone: {
-      title: '🏆 Projet final : Application full-stack JavaScript',
-      scenario: `Tu es développeur full-stack. Tu dois construire une application de gestion de tâches avec : frontend DOM vanilla, API Express REST, persistance JSON/fichier, tests Jest, et types TypeScript.`,
-      tasks: [
-        {
-          title: '1. API Express',
-          instructions: `Créer une API REST /api/tasks avec CRUD complet, middleware auth par API key, rate limiting et gestion d'erreurs centralisée.`,
-        },
-        {
-          title: '2. Frontend DOM',
-          instructions: `Construire l'interface avec du DOM vanilla : liste de tâches, formulaire, filtres, délégation d'événements, debounce sur la recherche.`,
-        },
-        {
-          title: '3. Fetch & async',
-          instructions: `Connecter le frontend à l'API avec fetch. Implémenter le retry automatique, les indicateurs de chargement et la gestion d'erreurs.`,
-        },
-        {
-          title: '4. Tests Jest',
-          instructions: `Écrire des tests unitaires pour les fonctions utilitaires et des tests d'intégration pour les routes Express (avec mocks).`,
-        },
-      ],
-      skills: ['Express', 'DOM API', 'Fetch', 'Closures', 'Classes', 'Jest', 'TypeScript'],
-      links: [
-        { label: 'Express.js — documentation', url: 'https://expressjs.com/fr/' },
-        { label: 'Jest — documentation', url: 'https://jestjs.io/fr/' },
-      ],
-    },
-  },
+
 ];
 
 export default TRACKS;

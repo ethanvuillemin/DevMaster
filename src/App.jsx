@@ -3,14 +3,8 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import Home from './pages/Home';
 import TrackRoadmap from './pages/TrackRoadmap';
-import ModulePage from './pages/ModulePage';
-import CICDModulePage from './pages/CICDModulePage';
-import DockerModulePage from './pages/DockerModulePage';
-import MLModulePage from './pages/MLModulePage';
-import DLModulePage from './pages/DLModulePage';
-import DevOpsModulePage from './pages/DevOpsModulePage';
-import PythonModulePage from './pages/PythonModulePage';
-import JSModulePage from './pages/JSModulePage';
+import ModulePage from './pages/ModulePage';           // Git uniquement (terminal simulé)
+import TrackModulePage from './pages/TrackModulePage'; // Tous les autres tracks
 import Cheatsheets from './pages/Cheatsheets';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -22,45 +16,21 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
 
-          {/* Git */}
+          {/* ── Git (page spéciale avec terminal simulé) ──── */}
           <Route path="/git"            element={<TrackRoadmap trackId="git" />} />
           <Route path="/git/module/:id" element={<ModulePage />} />
 
-          {/* CI/CD */}
-          <Route path="/cicd"            element={<TrackRoadmap trackId="cicd" />} />
-          <Route path="/cicd/module/:id" element={<CICDModulePage />} />
+          {/* ── Tous les autres tracks (route générique) ──── */}
+          <Route path="/:trackId"            element={<TrackRoadmap />} />
+          <Route path="/:trackId/module/:id" element={<TrackModulePage />} />
 
-          {/* Docker */}
-          <Route path="/docker"            element={<TrackRoadmap trackId="docker" />} />
-          <Route path="/docker/module/:id" element={<DockerModulePage />} />
-
-          {/* Machine Learning */}
-          <Route path="/ml"            element={<TrackRoadmap trackId="ml" />} />
-          <Route path="/ml/module/:id" element={<MLModulePage />} />
-
-          {/* Deep Learning */}
-          <Route path="/dl"            element={<TrackRoadmap trackId="dl" />} />
-          <Route path="/dl/module/:id" element={<DLModulePage />} />
-
-          {/* DevOps / MLOps / LLMOps */}
-          <Route path="/devops"            element={<TrackRoadmap trackId="devops" />} />
-          <Route path="/devops/module/:id" element={<DevOpsModulePage />} />
-
-          {/* Python */}
-          <Route path="/python"            element={<TrackRoadmap trackId="python" />} />
-          <Route path="/python/module/:id" element={<PythonModulePage />} />
-
-          {/* JavaScript */}
-          <Route path="/js"            element={<TrackRoadmap trackId="js" />} />
-          <Route path="/js/module/:id" element={<JSModulePage />} />
-
-          {/* Cheatsheets */}
+          {/* ── Cheatsheets ───────────────────────────────── */}
           <Route path="/cheatsheets" element={<Cheatsheets />} />
           <Route path="/cheatsheet"  element={<Cheatsheets />} />
 
-          {/* Legacy */}
-          <Route path="/roadmap"       element={<TrackRoadmap trackId="git" />} />
-          <Route path="/module/:id"    element={<ModulePage />} />
+          {/* ── Legacy ────────────────────────────────────── */}
+          <Route path="/roadmap"    element={<TrackRoadmap trackId="git" />} />
+          <Route path="/module/:id" element={<ModulePage />} />
         </Routes>
       </main>
       <Footer />

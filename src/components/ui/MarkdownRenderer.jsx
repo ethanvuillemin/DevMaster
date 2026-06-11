@@ -12,6 +12,14 @@ export default function MarkdownRenderer({ text }) {
   let codeBlock = null;
   let tableRows = [];
 
+  // ── Image block parsing ─────────────────────────────────
+  const parseImageBlock = (line) => {
+    const m = line.match(/^!\[([^\]]*)\]\(([^)]+)\)(?:\s*_(.+)_)?$/);
+    if (!m) return null;
+    const [, alt, src, caption] = m;
+    return { alt, src, caption };
+  };
+
   // ── Inline parsing ──────────────────────────────────────
   const parseInline = (str) => {
     const parts = [];
@@ -164,6 +172,38 @@ export default function MarkdownRenderer({ text }) {
     }
     if (tableRows.length > 0) flushTable();
 
+    // Images  ![alt](url) _optional caption_
+    const imgData = parseImageBlock(line);
+    if (imgData) {
+      elements.push(
+        <figure key={i} className="my-5">
+          <img
+            src={imgData.src}
+            alt={imgData.alt}
+            className="rounded-xl border border-surface-3/40 w-full max-w-2xl mx-auto block shadow-sm"
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.nextSibling?.style && (e.currentTarget.nextSibling.style.display = 'flex');
+            }}
+          />
+          <div
+            className="hidden items-center gap-2 p-3 rounded-xl border border-surface-3/40 bg-surface-2 text-text-muted text-sm"
+          >
+            <span>🖼️</span>
+            <span>{imgData.alt}</span>
+          </div>
+          {imgData.caption && (
+            <figcaption className="text-center text-xs text-text-muted mt-2 italic">
+              {imgData.caption}
+            </figcaption>
+          )}
+        </figure>
+      );
+      i++;
+      continue;
+    }
+
     // Headings
     if (line.startsWith('### ')) {
       elements.push(
@@ -189,8 +229,9 @@ export default function MarkdownRenderer({ text }) {
       elements.push(
         <blockquote
           key={i}
-          className="border-l-[3px] border-accent-yellow pl-4 py-2 my-3
-                     bg-amber-950/20 rounded-r-lg text-accent-yellow/90 text-sm italic"
+          className="border-l-[3px] border-amber-400 pl-4 py-2 my-3
+                     bg-amber-50 dark:bg-amber-950/20 rounded-r-lg
+                     text-amber-800 dark:text-amber-300 text-sm italic"
         >
           {parseInline(line.slice(2))}
         </blockquote>

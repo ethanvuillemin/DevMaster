@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useProgress } from '../context/ProgressContext';
 import TRACKS, { TAGS } from '../data/tracks';
 import MODULE_REGISTRY from '../data/registry';
@@ -12,7 +12,11 @@ const LEVEL_META = {
   'Expert':        { label: 'Expert',        badge: '04', color: '#F3752B' },
 };
 
-export default function TrackRoadmap({ trackId }) {
+export default function TrackRoadmap({ trackId: trackIdProp }) {
+  // Supporte prop (ex: trackId="git") et route générique (/:trackId)
+  const { trackId: trackIdParam } = useParams();
+  const trackId = trackIdProp ?? trackIdParam;
+
   const { isExerciseComplete, isModuleComplete, getTrackStats } = useProgress();
   const track = TRACKS.find((t) => t.id === trackId);
   const modules = MODULE_REGISTRY[trackId] || [];
