@@ -7,7 +7,7 @@ export function ThemeProvider({ children }) {
     const saved = localStorage.getItem('devmaster-theme');
     if (saved === 'light' || saved === 'dark') return saved;
     if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
-    return 'dark';
+    return 'light';
   });
 
   // Appliquer le thème immédiatement (sans attendre useEffect)
