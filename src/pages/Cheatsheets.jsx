@@ -3,12 +3,47 @@ import GIT_CHEATSHEET_SECTIONS from '../data/cheatsheet';
 import DOCKER_CHEATSHEET_SECTIONS from '../data/dockerCheatsheet';
 import ML_METRICS_CHEATSHEET from '../data/mlMetricsCheatsheet';
 
+/* ── SVG tab icons ── */
+const GitTabIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 9v6a3 3 0 0 0 3 3h3"/>
+    <path d="M13 6h3a3 3 0 0 1 3 3v6"/>
+  </svg>
+);
+const DockerTabIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="14" width="18" height="6" rx="2"/>
+    <rect x="5" y="8"  width="14" height="5" rx="1.5"/>
+    <rect x="7" y="3"  width="10" height="4" rx="1"/>
+  </svg>
+);
+const BrainTabIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="7"  cy="10" r="2"/><circle cx="17" cy="10" r="2"/>
+    <circle cx="7"  cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
+    <line x1="9"  y1="10" x2="15" y2="10"/>
+    <line x1="9"  y1="17" x2="15" y2="17"/>
+    <line x1="7"  y1="12" x2="7"  y2="15"/>
+    <line x1="17" y1="12" x2="17" y2="15"/>
+  </svg>
+);
+const SearchIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>
+);
+const XIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+
 // Configuration des cheatsheets disponibles
 const CHEATSHEETS = [
   {
     id: 'git',
-    title: 'Git Commands',
-    icon: '🌿',
+    title: 'Git',
+    icon: <GitTabIcon/>,
     description: 'Toutes les commandes Git essentielles',
     downloadUrl: 'https://education.github.com/git-cheat-sheet-education.pdf',
     downloadLabel: 'PDF officiel GitHub'
@@ -16,7 +51,7 @@ const CHEATSHEETS = [
   {
     id: 'docker',
     title: 'Docker',
-    icon: '🐳',
+    icon: <DockerTabIcon/>,
     description: 'Commandes Docker, Compose et Dockerfile essentiels',
     downloadUrl: 'https://docs.docker.com/get-started/docker_cheatsheet.pdf',
     downloadLabel: 'PDF officiel Docker'
@@ -24,7 +59,7 @@ const CHEATSHEETS = [
   {
     id: 'ml-metrics',
     title: 'ML Metrics',
-    icon: '🤖',
+    icon: <BrainTabIcon/>,
     description: 'Métriques essentielles pour le Machine Learning',
     downloadUrl: null,
     downloadLabel: null
@@ -63,7 +98,7 @@ function GitCheatsheet({ search }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filtered.map((section) => (
           <div key={section.title} className="card p-5 animate-slide-up">
-            <h3 className="font-display font-bold mb-3 flex items-center gap-2" style={{ color: section.colorHex }}>
+            <h3 className="font-display font-semibold mb-3 flex items-center gap-2" style={{ color: section.colorHex }}>
               <div className="w-2 h-2 rounded-full shrink-0" style={{ background: section.colorHex }} />
               {section.title}
             </h3>
@@ -83,7 +118,7 @@ function GitCheatsheet({ search }) {
 
       {/* Extra links */}
       <div className="mt-10 card p-6">
-        <h3 className="font-display font-bold text-text-primary mb-3">📚 Aller plus loin</h3>
+        <h3 className="font-display font-bold text-text-primary mb-3">Aller plus loin</h3>
         <div className="grid sm:grid-cols-2 gap-3">
           {[
             { label: 'Pro Git Book (gratuit)', url: 'https://git-scm.com/book/fr/v2' },
@@ -161,7 +196,7 @@ function MLMetricsCheatsheet({ search }) {
       {selectedCategory === 'all' && !search && (
         <div className="card p-5 bg-gradient-to-br from-surface-1 to-surface-2 border-accent-purple/20">
           <h3 className="font-display font-bold text-text-primary mb-4 flex items-center gap-2">
-            📋 Rappel : Matrice de Confusion
+            Rappel : Matrice de Confusion
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full max-w-md text-sm">
@@ -296,7 +331,7 @@ function MLMetricsCheatsheet({ search }) {
 
                       {/* Example */}
                       <div className="p-4 bg-gradient-to-r from-accent-blue/5 to-accent-purple/5 rounded-lg border border-accent-blue/20">
-                        <h4 className="text-sm font-bold text-accent-blue mb-2">💡 Exemple concret</h4>
+                        <h4 className="text-sm font-bold text-accent-blue mb-2">Exemple concret</h4>
                         <p className="text-sm text-text-secondary">{metric.example}</p>
                       </div>
                     </div>
@@ -318,7 +353,7 @@ function MLMetricsCheatsheet({ search }) {
       {selectedCategory === 'all' && !search && (
         <div className="card p-6 bg-gradient-to-br from-surface-1 to-surface-2">
           <h3 className="font-display font-bold text-text-primary mb-4">
-            🧭 Guide rapide de sélection
+            Guide de sélection
           </h3>
           <div className="grid sm:grid-cols-2 gap-3">
             {ML_METRICS_CHEATSHEET.selectionGuide.scenarios.map((scenario, i) => (
@@ -350,10 +385,10 @@ export default function Cheatsheets() {
     <div className="animate-fade-in">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="font-display font-extrabold text-3xl text-text-primary tracking-tight mb-2">
-          📋 Cheatsheets
+        <h1 className="font-display font-bold text-3xl mb-2" style={{ color: 'var(--text-primary)' }}>
+          Cheatsheets
         </h1>
-        <p className="text-text-secondary">
+        <p style={{ color: 'var(--text-secondary)' }}>
           Références rapides et complètes pour booster ta productivité.
         </p>
       </div>
@@ -364,16 +399,21 @@ export default function Cheatsheets() {
           <button
             key={sheet.id}
             onClick={() => { setActiveSheet(sheet.id); setSearch(''); }}
-            className={`group relative px-4 py-2.5 rounded-xl font-medium transition-all duration-200 ${
-              activeSheet === sheet.id
-                ? 'bg-gradient-to-r from-accent-blue to-accent-purple text-white shadow-lg shadow-accent-blue/20'
-                : 'bg-surface-2 text-text-muted hover:text-text-primary hover:bg-surface-3'
-            }`}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer"
+            style={activeSheet === sheet.id ? {
+              background: 'var(--brand)',
+              color: '#fff',
+              boxShadow: '0 4px 14px rgba(99,102,241,0.35)',
+            } : {
+              background: 'var(--surface-2)',
+              color: 'var(--text-muted)',
+              border: '1px solid var(--surface-3)',
+            }}
+            onMouseEnter={e => { if (activeSheet !== sheet.id) e.currentTarget.style.color = 'var(--text-primary)'; }}
+            onMouseLeave={e => { if (activeSheet !== sheet.id) e.currentTarget.style.color = 'var(--text-muted)'; }}
           >
-            <span className="flex items-center gap-2">
-              <span>{sheet.icon}</span>
-              <span>{sheet.title}</span>
-            </span>
+            {sheet.icon}
+            {sheet.title}
           </button>
         ))}
       </div>
@@ -381,32 +421,40 @@ export default function Cheatsheets() {
       {/* Active Sheet Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="font-display font-bold text-xl text-text-primary flex items-center gap-2">
+          <h2 className="font-display font-bold text-xl flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
             {currentSheet?.icon} {currentSheet?.title}
           </h2>
-          <p className="text-sm text-text-muted">{currentSheet?.description}</p>
+          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{currentSheet?.description}</p>
         </div>
 
         <div className="flex items-center gap-3">
           {/* Search */}
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-sm">🔍</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              style={{ color: 'var(--text-muted)' }}>
+              <SearchIcon/>
+            </span>
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Rechercher..."
-              className="w-48 sm:w-64 pl-9 pr-4 py-2 rounded-xl bg-surface-1 border border-surface-3
-                         text-text-primary text-sm font-mono placeholder:text-text-muted/50
-                         focus:outline-none focus:border-accent-green/40 transition-colors"
+              className="w-48 sm:w-64 pl-9 pr-8 py-2 rounded-xl text-sm font-mono placeholder:opacity-40 transition-colors focus:outline-none"
+              style={{
+                background: 'var(--surface-2)',
+                border: '1px solid var(--surface-3)',
+                color: 'var(--text-primary)',
+              }}
               spellCheck={false}
             />
             {search && (
               <button
                 onClick={() => setSearch('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
-              >
-                ✕
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 transition-colors cursor-pointer"
+                style={{ color: 'var(--text-muted)' }}
+                onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
+                onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}>
+                <XIcon/>
               </button>
             )}
           </div>

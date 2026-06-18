@@ -4,23 +4,56 @@ import { useProgress } from '../../context/ProgressContext';
 import { useTheme } from '../../context/ThemeContext';
 import ResetModal from '../ui/ResetModal';
 
-const MoonIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+/* ── SVG Icons ── */
+const Logo = () => (
+  <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+    <rect width="32" height="32" rx="8" fill="var(--brand)" fillOpacity="0.15"/>
+    <path d="M16 5 L27 11.5 V24.5 L16 31 L5 24.5 V11.5 Z" stroke="var(--brand)" strokeWidth="1.8" fill="none" strokeLinejoin="round"/>
+    <path d="M16 12 L21 15 V21 L16 24 L11 21 V15 Z" fill="var(--brand)" fillOpacity="0.6"/>
+    <circle cx="16" cy="16" r="2" fill="var(--brand)"/>
+  </svg>
+);
+
+const HomeIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+  </svg>
+);
+
+const BookIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
   </svg>
 );
 
 const SunIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-    <circle cx="12" cy="12" r="5" />
-    <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/>
+    <line x1="12" y1="2"  x2="12" y2="4"/>  <line x1="12" y1="20" x2="12" y2="22"/>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+    <line x1="2" y1="12" x2="4" y2="12"/>   <line x1="20" y1="12" x2="22" y2="12"/>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+  </svg>
+);
+
+const MoonIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+);
+
+const MenuIcon = ({ open }) => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    {open
+      ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
+      : <><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></>
+    }
+  </svg>
+);
+
+const ResetIcon = () => (
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+    <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/>
   </svg>
 );
 
@@ -29,125 +62,127 @@ function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      title={isDark ? 'Passer en mode clair' : 'Passer en mode sombre'}
-      className="relative w-14 h-7 rounded-full border border-surface-3 bg-surface-2 flex items-center px-1 transition-all duration-300 hover:border-surface-4 focus:outline-none focus:ring-2 focus:ring-accent-green/40"
+      title={isDark ? 'Mode clair' : 'Mode sombre'}
+      className="w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer focus-ring transition-colors"
+      style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}
+      onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
+      onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
     >
-      <span
-        className="absolute inset-0 rounded-full transition-all duration-300"
-        style={{ background: isDark ? 'rgba(89,205,144,0.08)' : 'rgba(63,167,214,0.12)' }}
-      />
-      <span
-        className="relative z-10 w-5 h-5 rounded-full flex items-center justify-center shadow-sm transition-all duration-300"
-        style={{
-          transform: isDark ? 'translateX(0)' : 'translateX(28px)',
-          background: isDark ? '#59CD90' : '#3FA7D6',
-          color: '#fff',
-        }}
-      >
-        {isDark ? <MoonIcon /> : <SunIcon />}
-      </span>
+      {isDark ? <SunIcon /> : <MoonIcon />}
     </button>
   );
 }
-
-
 
 export default function Navbar() {
   const { pathname } = useLocation();
   const { stats, resetProgress } = useProgress();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [resetOpen, setResetOpen] = useState(false);
-  const handleReset = useCallback(() => {
-    resetProgress();
-    setResetOpen(false);
-  }, [resetProgress]);
+  const [resetOpen, setResetOpen]   = useState(false);
+  const handleReset = useCallback(() => { resetProgress(); setResetOpen(false); }, [resetProgress]);
 
-  const navLinks = [
-    { to: '/', label: 'Accueil', active: pathname === '/' },
-    { to: '/cheatsheets', label: '📋 Cheatsheets', active: pathname.startsWith('/cheatsheet') },
+  const links = [
+    { to: '/',           label: 'Accueil',      icon: <HomeIcon />, active: pathname === '/' },
+    { to: '/cheatsheets', label: 'Cheatsheets', icon: <BookIcon />, active: pathname.startsWith('/cheatsheet') },
   ];
 
   return (
-    <nav className="sticky top-0 z-50 glass border-b border-surface-3/30">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-14">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <span className="text-2xl transition-transform duration-300 group-hover:rotate-12">🚀</span>
-          <span className="font-display font-extrabold text-lg tracking-tight">
-            <span className="text-text-primary">Dev</span>
-            <span className="gradient-text">Master</span>
-          </span>
-        </Link>
+    <>
+      <nav className="sticky top-0 z-50 glass">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between gap-4">
 
-        {/* Desktop */}
-        <div className="hidden sm:flex items-center gap-2">
-          {navLinks.map((link) => (
-            <Link key={link.to} to={link.to}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                link.active ? 'bg-surface-3 text-text-primary' : 'text-text-muted hover:text-text-secondary hover:bg-surface-2'
-              }`}>
-              {link.label}
-            </Link>
-          ))}
+          {/* ── Logo ── */}
+          <Link to="/" className="flex items-center gap-2.5 shrink-0 focus-ring rounded-lg group">
+            <Logo />
+            <span className="font-display font-bold text-[17px] tracking-tight">
+              <span style={{ color: 'var(--text-primary)' }}>Dev</span>
+              <span className="gradient-text">Master</span>
+            </span>
+          </Link>
 
-          <ThemeToggle />
-
-          {/* Progress pill */}
-          {stats.totalCompleted > 0 && (
-            <div className="ml-3 flex items-center gap-2 bg-surface-2 px-3 py-1 rounded-full border border-surface-3">
-              <span className="text-xs text-text-muted font-mono">{stats.totalCompleted}/{stats.totalExercises}</span>
-              <div className="w-12 h-1.5 rounded-full bg-surface-3 overflow-hidden">
-                <div className="h-full rounded-full bg-gradient-to-r from-accent-green to-accent-blue transition-all duration-700"
-                  style={{ width: `${stats.percentage}%` }} />
-              </div>
-              <button onClick={() => setResetOpen(true)}
-                className="ml-1 text-text-muted/50 hover:text-accent-red transition-colors"
-                title="Réinitialiser">
-                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-                  <path d="M2 2v5h5" /><path d="M3 8.5a6 6 0 1 1 1-3.5" />
-                </svg>
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Mobile toggle */}
-        <button onClick={() => setMobileOpen(!mobileOpen)}
-          className="sm:hidden p-2 text-text-muted hover:text-text-primary transition-colors" aria-label="Menu">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-            {mobileOpen ? <path d="M5 5l10 10M15 5L5 15" /> : <path d="M3 6h14M3 10h14M3 14h14" />}
-          </svg>
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="sm:hidden border-t border-surface-3/30 bg-surface-1/95 backdrop-blur-xl animate-slide-up">
-          <div className="px-4 py-3 flex flex-col gap-1">
-            {navLinks.map((link) => (
-              <Link key={link.to} to={link.to} onClick={() => setMobileOpen(false)}
-                className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  link.active ? 'bg-surface-3 text-text-primary' : 'text-text-muted hover:text-text-secondary'
-                }`}>
-                {link.label}
+          {/* ── Desktop nav ── */}
+          <div className="hidden sm:flex items-center gap-1">
+            {links.map(l => (
+              <Link key={l.to} to={l.to}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer focus-ring ${
+                  l.active ? '' : 'btn-ghost'
+                }`}
+                style={l.active ? {
+                  background: 'var(--surface-2)',
+                  color: 'var(--text-primary)',
+                  border: '1px solid var(--surface-3)',
+                } : {}}>
+                {l.icon}{l.label}
               </Link>
             ))}
-            {/* Theme toggle mobile */}
-            <div className="px-3 py-2.5 flex items-center justify-between">
-              <span className="text-sm text-text-muted">Thème</span>
-              <ThemeToggle />
-            </div>
-            {stats.totalCompleted > 0 && (
-              <button onClick={() => { setMobileOpen(false); setResetOpen(true); }}
-                className="px-3 py-2.5 rounded-lg text-sm font-medium text-accent-red/70 hover:text-accent-red text-left transition-colors">
-                ↺ Réinitialiser ({stats.totalCompleted}/{stats.totalExercises})
-              </button>
-            )}
           </div>
+
+          {/* ── Right side ── */}
+          <div className="hidden sm:flex items-center gap-2">
+            {/* Progress pill */}
+            {stats.totalCompleted > 0 && (
+              <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border"
+                style={{ background: 'var(--surface-2)', borderColor: 'var(--surface-3)' }}>
+                <div className="w-20 progress-track">
+                  <div className="progress-fill" style={{ width: `${stats.percentage}%` }}/>
+                </div>
+                <span className="text-xs font-mono tabular-nums" style={{ color: 'var(--text-muted)' }}>
+                  {stats.totalCompleted}/{stats.totalExercises}
+                </span>
+                <button onClick={() => setResetOpen(true)} title="Réinitialiser"
+                  className="cursor-pointer transition-colors focus-ring rounded"
+                  style={{ color: 'var(--text-muted)' }}
+                  onMouseEnter={e => e.currentTarget.style.color = '#F87171'}
+                  onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}>
+                  <ResetIcon />
+                </button>
+              </div>
+            )}
+            <ThemeToggle />
+          </div>
+
+          {/* ── Mobile toggle ── */}
+          <button onClick={() => setMobileOpen(v => !v)} aria-label="Menu"
+            className="sm:hidden w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer focus-ring"
+            style={{ color: 'var(--text-muted)', background: 'var(--surface-2)' }}>
+            <MenuIcon open={mobileOpen}/>
+          </button>
         </div>
-      )}
+
+        {/* ── Mobile menu ── */}
+        {mobileOpen && (
+          <div className="sm:hidden border-t animate-slide-up"
+            style={{ background: 'var(--glass-bg)', backdropFilter: 'blur(20px)', borderColor: 'var(--surface-3)' }}>
+            <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-1">
+              {links.map(l => (
+                <Link key={l.to} to={l.to} onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
+                    l.active ? '' : ''
+                  }`}
+                  style={l.active
+                    ? { background: 'var(--surface-2)', color: 'var(--text-primary)' }
+                    : { color: 'var(--text-muted)' }}>
+                  {l.icon}{l.label}
+                </Link>
+              ))}
+              <div className="h-px my-1" style={{ background: 'var(--surface-3)' }}/>
+              <div className="flex items-center justify-between px-3 py-2">
+                <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Thème</span>
+                <ThemeToggle />
+              </div>
+              {stats.totalCompleted > 0 && (
+                <button onClick={() => { setMobileOpen(false); setResetOpen(true); }}
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium cursor-pointer text-left"
+                  style={{ color: '#F87171' }}>
+                  <ResetIcon />
+                  Réinitialiser ({stats.totalCompleted}/{stats.totalExercises})
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </nav>
 
       <ResetModal open={resetOpen} onConfirm={handleReset} onCancel={() => setResetOpen(false)} />
-    </nav>
+    </>
   );
 }
