@@ -3,6 +3,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import Home from './pages/Home';
 import TrackRoadmap from './pages/TrackRoadmap';
+import GlobalRoadmap from './pages/GlobalRoadmap';
 import ModulePage from './pages/ModulePage';           // Git uniquement (terminal simulé)
 import TrackModulePage from './pages/TrackModulePage'; // Tous les autres tracks
 import Cheatsheets from './pages/Cheatsheets';
@@ -28,8 +29,10 @@ export default function App() {
           <Route path="/cheatsheets" element={<Cheatsheets />} />
           <Route path="/cheatsheet"  element={<Cheatsheets />} />
 
+          {/* ── Roadmap globale ───────────────────────────── */}
+          <Route path="/roadmap"    element={<GlobalRoadmap />} />
+
           {/* ── Legacy ────────────────────────────────────── */}
-          <Route path="/roadmap"    element={<TrackRoadmap trackId="git" />} />
           <Route path="/module/:id" element={<ModulePage />} />
         </Routes>
       </main>

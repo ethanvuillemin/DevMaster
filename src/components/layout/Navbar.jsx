@@ -26,6 +26,13 @@ const BookIcon = () => (
   </svg>
 );
 
+const MapIcon = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+    <line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/>
+  </svg>
+);
+
 const SunIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
     <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/>
@@ -81,7 +88,8 @@ export default function Navbar() {
   const handleReset = useCallback(() => { resetProgress(); setResetOpen(false); }, [resetProgress]);
 
   const links = [
-    { to: '/',           label: 'Accueil',      icon: <HomeIcon />, active: pathname === '/' },
+    { to: '/',            label: 'Accueil',     icon: <HomeIcon />, active: pathname === '/' },
+    { to: '/roadmap',     label: 'Roadmap',     icon: <MapIcon />,  active: pathname === '/roadmap' },
     { to: '/cheatsheets', label: 'Cheatsheets', icon: <BookIcon />, active: pathname.startsWith('/cheatsheet') },
   ];
 

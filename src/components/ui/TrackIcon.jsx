@@ -5,6 +5,31 @@
 
 const icons = {
 
+  basics: ({ size, color }) => (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="6" y="8" width="36" height="24" rx="3" stroke={color} strokeWidth="2.5" fill={color} fillOpacity="0.08"/>
+      <line x1="12" y1="16" x2="20" y2="16" stroke={color} strokeWidth="2" strokeLinecap="round" opacity="0.8"/>
+      <line x1="20" y1="16" x2="20" y2="22" stroke={color} strokeWidth="2" strokeLinecap="round" opacity="0.8"/>
+      <line x1="20" y1="22" x2="28" y2="22" stroke={color} strokeWidth="2" strokeLinecap="round" opacity="0.8"/>
+      <line x1="24" y1="16" x2="36" y2="16" stroke={color} strokeWidth="2" strokeLinecap="round" opacity="0.5"/>
+      <line x1="12" y1="26" x2="18" y2="26" stroke={color} strokeWidth="2" strokeLinecap="round" opacity="0.5"/>
+      <circle cx="20" cy="16" r="2" fill={color} opacity="0.9"/>
+      <circle cx="20" cy="22" r="2" fill={color} opacity="0.9"/>
+      <circle cx="28" cy="22" r="2" fill={color} opacity="0.7"/>
+      <line x1="24" y1="32" x2="24" y2="38" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
+      <line x1="18" y1="38" x2="30" y2="38" stroke={color} strokeWidth="2.5" strokeLinecap="round"/>
+    </svg>
+  ),
+
+  python: ({ size, color }) => (
+    <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M24 6 C16 6 12 10 12 16 L12 22 L24 22 L24 26 L10 26 C6 26 4 29 4 34 C4 40 8 42 16 42 L20 42 L20 38 C16 38 14 36 14 33 L14 26" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      <path d="M24 42 C32 42 36 38 36 32 L36 26 L24 26 L24 22 L38 22 C42 22 44 19 44 14 C44 8 40 6 32 6 L28 6 L28 10 C32 10 34 12 34 15 L34 22" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      <circle cx="20" cy="13" r="2.5" fill={color}/>
+      <circle cx="28" cy="35" r="2.5" fill={color}/>
+    </svg>
+  ),
+
   git: ({ size, color }) => (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
       {/* Main branch line */}

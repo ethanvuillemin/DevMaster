@@ -13,6 +13,36 @@ export const TAGS = {
 
 const TRACKS = [
   {
+    id: 'basics',
+    slug: '/basics',
+    icon: '💻',
+    title: 'Les bases de l\'informatique',
+    subtitle: 'Fondamentaux essentiels',
+    desc: 'Fonctionnement des ordinateurs, CLI, réseaux, termes techniques — les prérequis de tout développeur.',
+    tags: ['dev'],
+    color: '#64748B',
+    gradient: 'from-[#64748B]/15 to-[#64748B]/5',
+    borderColor: 'border-[#64748B]/25',
+    features: ['6 modules fondamentaux', 'CLI & terminal', 'Réseaux & protocoles'],
+    moduleIdRange: [800, 899],
+    capstone: null,
+  },
+  {
+    id: 'python',
+    slug: '/python',
+    icon: '🐍',
+    title: 'Python',
+    subtitle: 'Du script au data science',
+    desc: 'Variables, fonctions, POO, NumPy, Pandas — maîtriser Python pour le développement et le Machine Learning.',
+    tags: ['dev', 'mlops'],
+    color: '#3B82F6',
+    gradient: 'from-[#3B82F6]/15 to-[#3B82F6]/5',
+    borderColor: 'border-[#3B82F6]/25',
+    features: ['10 modules progressifs', 'NumPy & Pandas', 'Prérequis ML'],
+    moduleIdRange: [900, 999],
+    capstone: null,
+  },
+  {
     id: 'git',
     slug: '/git',
     icon: '🌿',
@@ -720,6 +750,41 @@ with wandb.init(project='radiology-capstone') as run:
     },
   },
 
+];
+
+export const ROADMAP_PHASES = [
+  {
+    id: 'fondamentaux',
+    number: '01',
+    label: 'Fondamentaux',
+    desc: 'Les prérequis absolus avant de coder',
+    color: '#64748B',
+    trackIds: ['basics', 'python'],
+  },
+  {
+    id: 'versioning',
+    number: '02',
+    label: 'Versioning & Collaboration',
+    desc: 'Maîtriser Git pour travailler en équipe',
+    color: '#59CD90',
+    trackIds: ['git'],
+  },
+  {
+    id: 'devops',
+    number: '03',
+    label: 'DevOps & Infrastructure',
+    desc: 'Automatiser, conteneuriser, déployer',
+    color: '#3FA7D6',
+    trackIds: ['cicd', 'docker'],
+  },
+  {
+    id: 'ia',
+    number: '04',
+    label: 'Intelligence Artificielle',
+    desc: 'Machine Learning, Deep Learning et IA générative',
+    color: '#A78BFA',
+    trackIds: ['ml', 'dl', 'genai'],
+  },
 ];
 
 export default TRACKS;

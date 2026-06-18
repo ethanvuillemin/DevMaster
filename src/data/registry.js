@@ -24,15 +24,19 @@ import DL_MODULES     from './dlModules';
 import DL_PROJECTS    from './dlProjects';
 import GENAI_MODULES  from './genai/index.js';
 import GENAI_PROJECTS from './genaiProjects';
+import BASICS_MODULES from './basicsModules';
+import PYTHON_MODULES from './pythonModules';
 
 // ─────────────────────────────────────────────────────────────────────
 // TRACK_DATA — ajouter un track ici (une seule entrée suffit)
 // ─────────────────────────────────────────────────────────────────────
 const TRACK_DATA = {
+  basics: { modules: BASICS_MODULES, projects: {} },
+  python: { modules: PYTHON_MODULES, projects: {} },
   git:    { modules: MODULES,        projects: {} },
-  cicd:   { modules: CICD_MODULES,   projects: {} },   // exercices dans mod.exercises
-  docker: { modules: DOCKER_MODULES, projects: {} },   // exercices dans mod.exercises
-  ml:     { modules: ML_MODULES,     projects: {} },   // exercices dans mod.exercises
+  cicd:   { modules: CICD_MODULES,   projects: {} },
+  docker: { modules: DOCKER_MODULES, projects: {} },
+  ml:     { modules: ML_MODULES,     projects: {} },
   dl:     { modules: DL_MODULES,     projects: DL_PROJECTS },
   genai:  { modules: GENAI_MODULES,  projects: GENAI_PROJECTS },
 };
